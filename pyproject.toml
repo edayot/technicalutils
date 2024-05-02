@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "technicalutils"
+version = "0.1.0"
+description = ""
+authors = ["edayot <pro.e.dayot@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+weld-deps = "^0.6.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
