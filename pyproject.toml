@@ -10,6 +10,7 @@ python = "^3.11"
 beet = "^0.105.0"
 mecha = "^0.94.0"
 weld-deps = "^0.6.0"
+frozendict = "^2.4.2"
 
 [tool.poetry.dev-dependencies]
 python-semantic-release = "^8.7.0"
@@ -20,7 +21,16 @@ python-semantic-release = "^8.7.0"
 
 [tool.semantic_release]
 major_on_zero = false
-build_command = 'beet -s data_pack.zipped=true -s resource_pack.zipped=true -s meta.weld_deps.enabled=true && beet -s data_pack.zipped=true -s resource_pack.zipped=true -s meta.weld_deps.enabled=false -s data_pack.name="{{ project_id }}_{{ project_version }}_dp" -s resource_pack.name="{{ project_id }}_{{ project_version }}_rp"'
+build_command = '''
+    beet -s data_pack.zipped=true \
+         -s resource_pack.zipped=true \
+         -s meta.weld_deps.enabled=true && \
+    beet -s data_pack.zipped=true \
+         -s resource_pack.zipped=true \
+         -s meta.weld_deps.enabled=false \
+         -s data_pack.name="{{ project_id }}_{{ project_version }}_dp" \
+         -s resource_pack.name="{{ project_id }}_{{ project_version }}_rp"
+'''
 dist_path = "build"
 version_toml = ["pyproject.toml:tool.poetry.version"]
 version_source = "commit"
@@ -39,6 +49,7 @@ output = "build"
 
 pipeline = [
     "mecha",
+    "technicalutils",
 ]
 require=[
     "weld_deps",
@@ -62,14 +73,29 @@ multiline = true
 
 
 [tool.beet.meta.weld_deps]
-enabled = false
 enable_weld_merging=true
 clean_load_tag=true
 include_prerelease=false
 
 
 [[tool.beet.meta.weld_deps.deps]]
-id = "crafter"
-match = ">=0.2.0"
+id = "itemio"
+match = ">=0.14.1"
 source = "smithed"
 
+[[tool.beet.meta.weld_deps.deps]]
+id = "energy"
+match = ">=1.7.0"
+source = "smithed"
+
+
+[[tool.beet.meta.weld_deps.deps]]
+id = "nbtsmelting"
+match = ">=1.7.0"
+source = "smithed"
+
+
+[[tool.beet.meta.weld_deps.deps]]
+id = "fluid_crafting"
+match = ">=1.5.0"
+source = "smithed"
