@@ -1,6 +1,7 @@
 
 import random
 
+NAMESPACE = "technicalutils"
 
 def generate_uuid() -> list[int]:
     return [

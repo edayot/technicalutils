@@ -48,8 +48,8 @@ upload_to_vcs_release = true
 output = "build"
 
 pipeline = [
-    "mecha",
     "technicalutils",
+    "mecha",
 ]
 require=[
     "weld_deps",
