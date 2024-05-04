@@ -1,7 +1,7 @@
-
 import random
+from beet import Context, Language
+from .types import Lang, TranslatedString, NAMESPACE
 
-NAMESPACE = "technicalutils"
 
 def generate_uuid() -> list[int]:
     return [
@@ -12,4 +12,13 @@ def generate_uuid() -> list[int]:
     ]
 
 
+def export_translated_string(ctx: Context, translation: TranslatedString):
+    # create default languages files if they don't exist
+    for lang in Lang:
+        if lang.namespaced not in ctx.assets.languages:
+            ctx.assets.languages[lang.namespaced] = Language({})
 
+    for lang, translate in translation[1].items():
+        ctx.assets.languages[f"{NAMESPACE}:{lang.value}"].data[
+            translation[0]
+        ] = translate
