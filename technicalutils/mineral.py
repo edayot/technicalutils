@@ -1,22 +1,23 @@
 from beet import Context, LootTable, Language, FunctionTag, Function
 from dataclasses import dataclass, field
 
-from typing import Any
+from typing import Any, Literal, TypedDict
 from frozendict import frozendict
-from .utils import export_translated_string
+from .utils import export_translated_string, generate_uuid
 from .types import Lang, TranslatedString, NAMESPACE
 from .item import Item, BlockProperties, Registry
 from .crafting import ShapedRecipe, ShapelessRecipe, NBTSmelting
+
+from pydantic import BaseModel
 
 from enum import Enum
 import json
 
 Mineral_list: list["Mineral"] = []
+ToolType = Literal["pickaxe","axe","shovel","hoe","sword"]
 
 
-
-@dataclass
-class SubItem:
+class SubItem(BaseModel):
     translation: TranslatedString
     custom_model_data_offset: int
     block_properties: BlockProperties = None
@@ -39,7 +40,6 @@ class SubItem:
         export_translated_string(ctx, self.translation)
 
 
-@dataclass
 class SubItemBlock(SubItem):
     block_properties: BlockProperties = field(
         default_factory=lambda: BlockProperties("minecraft:lodestone")
@@ -49,7 +49,79 @@ class SubItemBlock(SubItem):
         return "minecraft:furnace"
 
 
-DEFAULT_ITEMS_DEFINITION = {
+
+class SubItemDamagable(SubItem):
+    max_damage: int 
+
+    def get_components(self):
+        return {
+            "minecraft:max_stack_size": 1,
+            "minecraft:max_damage": self.max_damage,
+        }
+
+
+class SubItemWeapon(SubItemDamagable):
+    attack_damage: float
+    attack_speed: float
+
+    def get_components(self):
+        res = super().get_components()
+        res.update({
+            "minecraft:attribute_modifiers": {
+                "modifiers": [
+                {
+                    "type": "minecraft:generic.attack_damage",
+                    "amount": self.attack_damage,
+                    "name": "Tool modifier",
+                    "operation": "add_value",
+                    "slot": "mainhand",
+                    "uuid": generate_uuid(),
+                },
+                {
+                    "type": "minecraft:generic.attack_speed",
+                    "amount": self.attack_speed,
+                    "name": "Tool modifier",
+                    "operation": "add_value",
+                    "slot": "mainhand",
+                    "uuid": generate_uuid(),
+                }
+                ]
+            }
+        })
+        return res
+
+class SubItemTool(SubItemWeapon):
+    type: ToolType
+    tier: Literal["wooden","stone","iron","golden","diamond","netherite"] = "wooden"
+    speed : float = 2.0
+
+
+    def get_components(self):
+        res = super().get_components()
+        res.update({
+            "minecraft:tool": {
+                "rules": [
+                    {
+                        "blocks": f"#minecraft:incorrect_for_{self.tier}_tool",
+                        "correct_for_drops": False,
+                    },
+                    {
+                        "blocks": "#minecraft:mineable/pickaxe",
+                        "correct_for_drops": True,
+                        "speed": self.speed,
+                    }
+                ],
+                "damage_per_block": 1,
+            }
+        })
+        return res
+    
+    def get_base_item(self):
+        return f"minecraft:{self.tier}_{self.type}"
+
+
+
+DEFAULT_MINERALS = {
     "ore": SubItemBlock(
         translation=(
             f"{NAMESPACE}.mineral_name.ore",
@@ -112,6 +184,56 @@ DEFAULT_ITEMS_DEFINITION = {
     ),
 }
 
+class TypingToolArgs(TypedDict):
+    attack_damage: float
+    attack_speed: float
+    max_damage: int
+    speed: float
+    tier: Literal["wooden","stone","iron","golden","diamond","netherite"]
+    translation: TranslatedString
+    custom_model_data_offset: int
+
+DEFAULT_TOOLS_ARGS : dict[ToolType,TypingToolArgs] = {
+    "pickaxe": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.pickaxe",
+            {Lang.en_us: "%s Pickaxe", Lang.fr_fr: "Pioche en %s"},
+        ),
+        "custom_model_data_offset": 10,
+    },
+    "axe": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.axe",
+            {Lang.en_us: "%s Axe", Lang.fr_fr: "Hache en %s"},
+        ),
+        "custom_model_data_offset": 11,
+    },
+    "shovel": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.shovel",
+            {Lang.en_us: "%s Shovel", Lang.fr_fr: "Pelle en %s"},
+        ),
+        "custom_model_data_offset": 12,
+    },
+    "hoe": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.hoe",
+            {Lang.en_us: "%s Hoe", Lang.fr_fr: "Houe en %s"},
+        ),
+        "custom_model_data_offset": 13,
+    },
+    "sword": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.sword",
+            {Lang.en_us: "%s Sword", Lang.fr_fr: "Épée en %s"},
+        ),
+        "custom_model_data_offset": 14,
+    },
+
+}
+
+
+
 
 @dataclass
 class Mineral:
@@ -119,7 +241,7 @@ class Mineral:
     name: TranslatedString
     custom_model_data: int
 
-    items_definiton: dict[str, SubItem]
+    items: dict[ToolType,TypingToolArgs] = field(default_factory=lambda: {})
 
     def __post_init__(self):
         Mineral_list.append(self)
@@ -127,18 +249,45 @@ class Mineral:
 
     def export(self, ctx: Context):
         export_translated_string(ctx, self.name)
-        for item in self.items_definiton:
-            subitem = self.items_definiton[item]
-            subitem.export(ctx)
-            Item(
-                id=f"{self.id}_{item}",
-                item_name=subitem.get_item_name(self.name),
-                custom_model_data=self.custom_model_data + subitem.custom_model_data_offset,
-                components_extra=subitem.get_components(),
-                base_item=subitem.get_base_item(),
-                block_properties=subitem.block_properties,
-                is_cookable=subitem.is_cookable,
-            )
+        self.export_subitem(ctx)
+
+    def export_subitem(self, ctx: Context):
+        for item in self.items.keys():
+            if not item in self.items:
+                continue
+            if self.items[item] is None:
+                subitem = DEFAULT_MINERALS[item]
+                subitem.export(ctx)
+                Item(
+                    id=f"{self.id}_{item}",
+                    item_name=subitem.get_item_name(self.name),
+                    custom_model_data=self.custom_model_data + subitem.custom_model_data_offset,
+                    components_extra=subitem.get_components(),
+                    base_item=subitem.get_base_item(),
+                    block_properties=subitem.block_properties,
+                    is_cookable=subitem.is_cookable,
+                )
+            else:
+                if item in DEFAULT_TOOLS_ARGS.keys():
+                    args = DEFAULT_TOOLS_ARGS[item]
+                    args.update(self.items[item])
+                    args["type"] = item
+                    subitem = SubItemTool(**args)
+                else:
+                    args = self.items[item]
+                    subitem = SubItem(**args)
+                subitem.export(ctx)
+                Item(
+                    id=f"{self.id}_{item}",
+                    item_name=subitem.get_item_name(self.name),
+                    custom_model_data=self.custom_model_data + subitem.custom_model_data_offset,
+                    components_extra=subitem.get_components(),
+                    base_item=subitem.get_base_item(),
+                    block_properties=subitem.block_properties,
+                    is_cookable=subitem.is_cookable,
+                )
+                
+                    
         self.generate_crafting_recipes(ctx)
         return self
     

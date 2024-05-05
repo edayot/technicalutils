@@ -189,7 +189,7 @@ kill @s
         res = []
         for key, value in self.components_extra.items():
             res.append(
-                {"function": "minecraft:set_component", "components": {key: value}}
+                {"function": "minecraft:set_components", "components": {key: value}}
             )
         return res
 

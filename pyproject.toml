@@ -93,12 +93,6 @@ source = "smithed"
 
 
 [[tool.beet.meta.weld_deps.deps]]
-id = "nbtsmelting"
-match = ">=1.7.0"
-source = "smithed"
-
-
-[[tool.beet.meta.weld_deps.deps]]
 id = "fluid_crafting"
 match = ">=1.5.0"
 source = "smithed"
