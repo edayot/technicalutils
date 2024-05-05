@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from .types import TextComponent, TextComponent_base, NAMESPACE
 from beet import Context, FunctionTag, Function, LootTable, Model
 from typing import Any
+from typing_extensions import TypedDict, NotRequired, Literal
 from .utils import export_translated_string
 from beet.contrib.vanilla import Vanilla
 
@@ -12,10 +13,23 @@ import json
 Registry: dict[str, "Item"] = {}
 
 
-@dataclass
-class BlockProperties:
+class WorldGenerationParams(TypedDict):
+    min_y: int
+    max_y: int
+    min_veins: int
+    max_veins: int
+    min_vein_size: int
+    max_vein_size: int
+    ignore_restrictions: Literal[0, 1]
+    dimension: NotRequired[str]
+    biome: NotRequired[str]
+    biome_blacklist: Literal["0b", "1b"]
+
+class BlockProperties(TypedDict):
     base_block: str
-    all_same_faces: bool = True
+    all_same_faces: NotRequired[bool]
+    world_generation: NotRequired[WorldGenerationParams]
+    
 
 
 @dataclass
@@ -32,6 +46,7 @@ class Item:
 
     block_properties: BlockProperties = None
     is_cookable: bool = False
+    is_armor: bool = False
 
     def __post_init__(self):
         assert self.id not in Registry, f"Item {self.id} already exists"
@@ -136,6 +151,17 @@ class Item:
     def create_custom_block(self, ctx: Context):
         if not self.block_properties:
             return
+        self.create_custom_block_placement(ctx)
+        self.create_custom_block_destroy(ctx)
+        self.handle_world_generation(ctx)
+
+    def handle_world_generation(self, ctx: Context):
+        if not self.block_properties.get("world_generation", None):
+            return
+        world_gen = self.block_properties["world_generation"]
+        print(world_gen)
+    
+    def create_custom_block_placement(self, ctx: Context):
         smithed_function_tag_id = f"smithed.custom_block:event/on_place"
         internal_function_id = f"{NAMESPACE}:impl/smithed.custom_block/on_place"
         if smithed_function_tag_id not in ctx.data.function_tags:
@@ -152,13 +178,13 @@ class Item:
 execute
     if data storage smithed.custom_block:main {{blockApi:{{id:"{NAMESPACE}:{self.id}"}}}}
     run function ./on_place/{self.id}:
-        setblock ~ ~ ~ {self.block_properties.base_block}
+        setblock ~ ~ ~ {self.block_properties["base_block"]}
         execute 
             summon item_display
             run function ./on_place/{self.id}/place_entity:
                 tag @s add {NAMESPACE}.{self.id}
                 tag @s add {NAMESPACE}.block
-                tag @s add {NAMESPACE}.block.{self.block_properties.base_block.replace("minecraft:", "")}
+                tag @s add {NAMESPACE}.block.{self.block_properties["base_block"].replace("minecraft:", "")}
                 tag @s add smithed.block
                 tag @s add smithed.strict
                 tag @s add smithed.entity
@@ -169,13 +195,15 @@ execute
                 data merge entity @s {{brightness:{{sky:10,block:15}}}}
 """
         )
+    
+    def create_custom_block_destroy(self, ctx: Context):
         loot_table_name = f"{NAMESPACE}:items/{self.id}"
         destroy_function_id = f"{NAMESPACE}:impl/blocks/destroy/{self.id}"
         ctx.data.functions[destroy_function_id] = Function(
             f"""
 
 execute
-    as @e[type=item,nbt={{Item:{{id:"{self.block_properties.base_block}",count:1}}}},limit=1,sort=nearest,distance=..3]
+    as @e[type=item,nbt={{Item:{{id:"{self.block_properties["base_block"]}",count:1}}}},limit=1,sort=nearest,distance=..3]
     run function ~/spawn_item:
         loot spawn ~ ~ ~ loot {loot_table_name}
         kill @s
@@ -183,11 +211,11 @@ execute
 kill @s
 """
         )
-        all_same_function_id = f"{NAMESPACE}:impl/blocks/destroy_{self.block_properties.base_block.replace('minecraft:', '')}"
+        all_same_function_id = f"{NAMESPACE}:impl/blocks/destroy_{self.block_properties['base_block'].replace('minecraft:', '')}"
         if all_same_function_id not in ctx.data.functions:
             ctx.data.functions[all_same_function_id] = Function()
         ctx.data.functions[all_same_function_id].append(
-            f"execute if entity @s[tag={NAMESPACE}.block.{self.block_properties.base_block.replace('minecraft:', '')}] run function {destroy_function_id}"
+            f"execute if entity @s[tag={NAMESPACE}.block.{self.block_properties['base_block'].replace('minecraft:', '')}] run function {destroy_function_id}"
         )
 
     def set_components(self):
@@ -254,11 +282,21 @@ kill @s
             }
         )
         # create the custom model
-        if not self.block_properties:
+        if not self.block_properties and not self.is_armor:
             ctx.assets.models[model_path] = Model(
                 {"parent": "item/generated", "textures": {"layer0": model_path}}
             )
-        elif self.block_properties.all_same_faces:
+        elif not self.block_properties and self.is_armor:
+            ctx.assets.models[model_path] = Model(
+                {
+                    "parent": "item/generated",
+                    "textures": {
+                        "layer0": f"{NAMESPACE}:item/clear",
+                        "layer1": f"{NAMESPACE}:item/{self.id}"
+                    },
+                }
+            )
+        elif self.block_properties.get("all_same_faces", False):
             ctx.assets.models[model_path] = Model(
                 {
                     "parent": "minecraft:block/cube_all",

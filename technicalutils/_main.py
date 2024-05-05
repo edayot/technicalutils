@@ -55,5 +55,49 @@ def beet_default(ctx: Context):
                 "attack_damage": 6,
                 "attack_speed": -3,
             },
+            "helmet": {
+                "armor": 6,
+                "armor_toughness": 2,
+                "max_damage": 200,
+                "additional_attributes": {
+                    "minecraft:generic.movement_speed": {
+                        "amount": -0.0015,
+                        "slot": "armor",
+                    }
+                }
+            },
+            "chestplate": {
+                "armor": 3,
+                "armor_toughness": 1,
+                "max_damage": 300,
+                "additional_attributes": {
+                    "minecraft:generic.movement_speed": {
+                        "amount": -0.0015,
+                        "slot": "armor",
+                    }
+                }
+            },
+            "leggings": {
+                "armor": 5,
+                "armor_toughness": 2,
+                "max_damage": 290,
+                "additional_attributes": {
+                    "minecraft:generic.movement_speed": {
+                        "amount": -0.0015,
+                        "slot": "armor",
+                    }
+                }
+            },
+            "boots": {
+                "armor": 2,
+                "armor_toughness": 1,
+                "max_damage": 250,
+                "additional_attributes": {
+                    "minecraft:generic.movement_speed": {
+                        "amount": -0.0015,
+                        "slot": "armor",
+                    }
+                }
+            },
         },
     )

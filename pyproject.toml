@@ -77,7 +77,7 @@ multiline = true
 
 [tool.beet.meta.weld_deps]
 enable_weld_merging=true
-clean_load_tag=true
+clean_load_tag=false
 include_prerelease=false
 
 
@@ -97,6 +97,24 @@ id = "fluid_crafting"
 match = ">=1.5.0"
 source = "smithed"
 
+
+[[tool.beet.meta.weld_deps.deps]]
+id = "nbtsmelting"
+match = ">=1.8.0"
+source = "smithed"
+
+
+
+[[tool.beet.meta.weld_deps.deps]]
+id = "%20chunk_scan.ores"
+match = ">=1.3.1"
+source = "smithed"
+
+
+[[tool.beet.meta.weld_deps.deps]]
+id = "chunk_scan"
+match = ">=1.3.1"
+source = "smithed"
 
 
 [tool.beet.meta.smithed.versioning]

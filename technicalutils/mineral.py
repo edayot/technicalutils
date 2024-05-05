@@ -1,7 +1,8 @@
 from beet import Context, LootTable, Language, FunctionTag, Function
 from dataclasses import dataclass, field
 
-from typing import Any, Literal, TypedDict
+from typing import Any, Literal
+from typing_extensions import TypedDict, NotRequired
 from frozendict import frozendict
 from .utils import export_translated_string, generate_uuid
 from .types import Lang, TranslatedString, NAMESPACE
@@ -15,6 +16,24 @@ import json
 
 Mineral_list: list["Mineral"] = []
 ToolType = Literal["pickaxe", "axe", "shovel", "hoe", "sword"]
+ArmorType = Literal["helmet", "chestplate", "leggings", "boots"]
+
+
+class AttributeModifier(TypedDict):
+    amount: float
+    name: NotRequired[str]
+    operation: NotRequired[str]
+    slot: str
+
+class TypingToolArgs(TypedDict):
+    attack_damage: float
+    attack_speed: float
+    max_damage: int
+    speed: float
+    tier: Literal["wooden", "stone", "iron", "golden", "diamond", "netherite"]
+    translation: TranslatedString
+    custom_model_data_offset: int
+    additional_attributes: dict[str, AttributeModifier]
 
 
 class SubItem(BaseModel):
@@ -22,6 +41,8 @@ class SubItem(BaseModel):
     custom_model_data_offset: int
     block_properties: BlockProperties = None
     is_cookable: bool = False
+
+    additional_attributes: dict[str, AttributeModifier] = field(default_factory=lambda: {})
 
     def get_item_name(self, translation: TranslatedString):
         return {
@@ -31,7 +52,22 @@ class SubItem(BaseModel):
         }
 
     def get_components(self):
-        return {}
+        return {
+            "minecraft:attribute_modifiers": {
+                "modifiers": [
+                    {
+                        "type": key,
+                        "amount": value["amount"],
+                        "name": value["name"] if "name" in value else "No name",
+                        "operation": value["operation"] if "operation" in value else "add_value",
+                        "slot": value["slot"],
+                        "uuid": generate_uuid(),
+                    }
+                    for key, value in self.additional_attributes.items()
+                ],
+                "show_in_tooltip": False
+            }
+        }
 
     def get_base_item(self):
         return "minecraft:jigsaw"
@@ -42,7 +78,7 @@ class SubItem(BaseModel):
 
 class SubItemBlock(SubItem):
     block_properties: BlockProperties = field(
-        default_factory=lambda: BlockProperties("minecraft:lodestone")
+        default_factory=lambda: BlockProperties({"base_block":"minecraft:lodestone"})
     )
 
     def get_base_item(self):
@@ -53,10 +89,54 @@ class SubItemDamagable(SubItem):
     max_damage: int
 
     def get_components(self):
-        return {
+        res = super().get_components()
+        res.update({
             "minecraft:max_stack_size": 1,
             "minecraft:max_damage": self.max_damage,
-        }
+        })
+        return res
+    
+
+class SubItemArmor(SubItemDamagable):
+    type: Literal["helmet", "chestplate", "leggings", "boots"]
+    armor: float
+    armor_toughness: float
+
+    def get_components(self):
+        res = super().get_components()
+        res["minecraft:attribute_modifiers"]["modifiers"].extend([
+            {
+                "type": "minecraft:generic.armor",
+                "amount": self.armor,
+                "name": "Armor modifier",
+                "operation": "add_value",
+                "slot": "chest",
+                "uuid": generate_uuid(),
+            },
+            {
+                "type": "minecraft:generic.armor_toughness",
+                "amount": self.armor_toughness,
+                "name": "Armor toughness modifier",
+                "operation": "add_value",
+                "slot": "chest",
+                "uuid": generate_uuid(),
+            },
+        ])
+        return res
+    
+    def get_base_item(self):
+        # get a leather armor item depending on the type
+        match self.type:
+            case "helmet":
+                return "minecraft:leather_helmet"
+            case "chestplate":
+                return "minecraft:leather_chestplate"
+            case "leggings":
+                return "minecraft:leather_leggings"
+            case "boots":
+                return "minecraft:leather_boots"
+            case _:
+                raise ValueError("Invalid armor type")
 
 
 class SubItemWeapon(SubItemDamagable):
@@ -74,7 +154,7 @@ class SubItemWeapon(SubItemDamagable):
                             "amount": self.attack_damage,
                             "name": "Tool modifier",
                             "operation": "add_value",
-                            "slot": "mainhand",
+                            "slot": "armor",
                             "uuid": generate_uuid(),
                         },
                         {
@@ -82,7 +162,7 @@ class SubItemWeapon(SubItemDamagable):
                             "amount": self.attack_speed,
                             "name": "Tool modifier",
                             "operation": "add_value",
-                            "slot": "mainhand",
+                            "slot": "armor",
                             "uuid": generate_uuid(),
                         },
                     ]
@@ -189,14 +269,7 @@ DEFAULT_MINERALS = {
 }
 
 
-class TypingToolArgs(TypedDict):
-    attack_damage: float
-    attack_speed: float
-    max_damage: int
-    speed: float
-    tier: Literal["wooden", "stone", "iron", "golden", "diamond", "netherite"]
-    translation: TranslatedString
-    custom_model_data_offset: int
+
 
 
 DEFAULT_TOOLS_ARGS: dict[ToolType, TypingToolArgs] = {
@@ -237,6 +310,48 @@ DEFAULT_TOOLS_ARGS: dict[ToolType, TypingToolArgs] = {
     },
 }
 
+class TypingArmorArgs(TypedDict):
+    armor: float
+    armor_toughness: float
+    max_damage: int
+    translation: TranslatedString
+    custom_model_data_offset: int
+    additional_attributes: dict[str, AttributeModifier]
+
+DEFAULT_ARMOR_ARGS: dict[str, TypingArmorArgs] = {
+    "helmet": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.helmet",
+            {Lang.en_us: "%s Helmet", Lang.fr_fr: "Casque en %s"},
+        ),
+        "custom_model_data_offset": 15,
+        "type": "helmet"
+    },
+    "chestplate": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.chestplate",
+            {Lang.en_us: "%s Chestplate", Lang.fr_fr: "Plastron en %s"},
+        ),
+        "custom_model_data_offset": 16,
+        "type": "chestplate"
+    },
+    "leggings": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.leggings",
+            {Lang.en_us: "%s Leggings", Lang.fr_fr: "Jambières en %s"},
+        ),
+        "custom_model_data_offset": 17,
+        "type": "leggings"
+    },
+    "boots": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.boots",
+            {Lang.en_us: "%s Boots", Lang.fr_fr: "Bottes en %s"},
+        ),
+        "custom_model_data_offset": 18,
+        "type": "boots"
+    },
+}
 
 @dataclass
 class Mineral:
@@ -244,7 +359,7 @@ class Mineral:
     name: TranslatedString
     custom_model_data: int
 
-    items: dict[ToolType, TypingToolArgs] = field(default_factory=lambda: {})
+    items: dict[ToolType | ArmorType, TypingToolArgs | TypingArmorArgs] = field(default_factory=lambda: {})
 
     def __post_init__(self):
         Mineral_list.append(self)
@@ -257,38 +372,32 @@ class Mineral:
         for item in self.items.keys():
             if not item in self.items:
                 continue
-            if self.items[item] is None:
+            if self.items[item] is None and item in DEFAULT_MINERALS.keys():
                 subitem = DEFAULT_MINERALS[item]
                 subitem.export(ctx)
-                Item(
-                    id=f"{self.id}_{item}",
-                    item_name=subitem.get_item_name(self.name),
-                    custom_model_data=self.custom_model_data
-                    + subitem.custom_model_data_offset,
-                    components_extra=subitem.get_components(),
-                    base_item=subitem.get_base_item(),
-                    block_properties=subitem.block_properties,
-                    is_cookable=subitem.is_cookable,
-                )
+            elif item in DEFAULT_TOOLS_ARGS.keys():
+                args = DEFAULT_TOOLS_ARGS[item]
+                args.update(self.items[item])
+                args["type"] = item
+                subitem = SubItemTool(**args)
+            elif item in DEFAULT_ARMOR_ARGS.keys():
+                args = DEFAULT_ARMOR_ARGS[item]
+                args.update(self.items[item])
+                subitem = SubItemArmor(**args)
             else:
-                if item in DEFAULT_TOOLS_ARGS.keys():
-                    args = DEFAULT_TOOLS_ARGS[item]
-                    args.update(self.items[item])
-                    args["type"] = item
-                    subitem = SubItemTool(**args)
-                else:
-                    args = self.items[item]
-                    subitem = SubItem(**args)
-                subitem.export(ctx)
-                Item(
-                    id=f"{self.id}_{item}",
-                    item_name=subitem.get_item_name(self.name),
-                    custom_model_data=self.custom_model_data
-                    + subitem.custom_model_data_offset,
-                    components_extra=subitem.get_components(),
-                    base_item=subitem.get_base_item(),
-                    block_properties=subitem.block_properties,
-                    is_cookable=subitem.is_cookable,
+                args = self.items[item]
+                subitem = SubItem(**args)
+            subitem.export(ctx)
+            Item(
+                id=f"{self.id}_{item}",
+                item_name=subitem.get_item_name(self.name),
+                custom_model_data=self.custom_model_data
+                + subitem.custom_model_data_offset,
+                components_extra=subitem.get_components(),
+                base_item=subitem.get_base_item(),
+                block_properties=subitem.block_properties,
+                is_cookable=subitem.is_cookable,
+                is_armor=isinstance(subitem, SubItemArmor),
                 )
 
         self.generate_crafting_recipes(ctx)
@@ -418,5 +527,42 @@ class Mineral:
                 ],
                 result=(sword, 1),
             ).export(ctx)
+        if helmet := self.get_item("helmet"):
+            ShapedRecipe(
+                items=[
+                    [ingot, ingot, ingot],
+                    [ingot, None, ingot],
+                    [None, None, None],
+                ],
+                result=(helmet, 1),
+            ).export(ctx)
+        if chestplate := self.get_item("chestplate"):
+            ShapedRecipe(
+                items=[
+                    [ingot, None, ingot],
+                    [ingot, ingot, ingot],
+                    [ingot, ingot, ingot],
+                ],
+                result=(chestplate, 1),
+            ).export(ctx)
+        if leggings := self.get_item("leggings"):
+            ShapedRecipe(
+                items=[
+                    [ingot, ingot, ingot],
+                    [ingot, None, ingot],
+                    [ingot, None, ingot],
+                ],
+                result=(leggings, 1),
+            ).export(ctx)
+        if boots := self.get_item("boots"):
+            ShapedRecipe(
+                items=[
+                    [None, None, None],
+                    [ingot, None, ingot],
+                    [ingot, None, ingot],
+                ],
+                result=(boots, 1),
+            ).export(ctx)
+
         
 
