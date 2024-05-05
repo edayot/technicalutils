@@ -25,15 +25,178 @@ class AttributeModifier(TypedDict):
     operation: NotRequired[str]
     slot: str
 
-class TypingToolArgs(TypedDict):
-    attack_damage: float
-    attack_speed: float
-    max_damage: int
-    speed: float
-    tier: Literal["wooden", "stone", "iron", "golden", "diamond", "netherite"]
+class TypingSubItem(TypedDict):
     translation: TranslatedString
     custom_model_data_offset: int
+    block_properties: BlockProperties
+    is_cookable: bool
     additional_attributes: dict[str, AttributeModifier]
+
+
+class TypingDamagable(TypingSubItem):
+    max_damage: int
+
+class TypingToolArgs(TypingDamagable):
+    attack_damage: float
+    attack_speed: float
+    speed: float
+    tier: Literal["wooden", "stone", "iron", "golden", "diamond", "netherite"]
+
+class TypingArmorArgs(TypingDamagable):
+    armor: float
+    armor_toughness: float
+
+class TypingSubItemBlock(TypedDict):
+    block_properties: BlockProperties
+
+
+
+
+DEFAULT_MINERALS_BLOCK_ARGS: dict[str, TypingSubItemBlock] = {
+    "ore": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.ore",
+            {Lang.en_us: "%s Ore", Lang.fr_fr: "Minerai de %s"},
+        ),
+        "custom_model_data_offset": 0,
+        "block_properties": BlockProperties({"base_block":"minecraft:stone"})
+    },
+    "deepslate_ore": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.deepslate_ore",
+            {Lang.en_us: "Deepslate %s Ore", Lang.fr_fr: "Minerai de deepslate de %s"},
+        ),
+        "custom_model_data_offset": 1,
+        "block_properties": BlockProperties({"base_block":"minecraft:deepslate"})
+    },
+    "raw_ore_block": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.raw_block",
+            {Lang.en_us: "Raw %s Block", Lang.fr_fr: "Bloc brut de %s"},
+        ),
+        "custom_model_data_offset": 5,
+        "block_properties": BlockProperties({"base_block":"minecraft:stone"})
+    },
+    "block": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.block",
+            {Lang.en_us: "%s Block", Lang.fr_fr: "Bloc de %s"},
+        ),
+        "custom_model_data_offset": 6,
+        "block_properties": BlockProperties({"base_block":"minecraft:stone"})
+    },
+}
+
+DEFAULT_MINERALS_ITEM_ARGS: dict[str, TypingSubItem] = {
+    "raw_ore": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.raw_ore",
+            {Lang.en_us: "Raw %s Ore", Lang.fr_fr: "Minerai brut de %s"},
+        ),
+        "custom_model_data_offset": 2,
+    },
+    "ingot": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.ingot",
+            {Lang.en_us: "%s Ingot", Lang.fr_fr: "Lingot de %s"},
+        ),
+        "custom_model_data_offset": 3,
+    },
+    "nugget": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.nugget",
+            {Lang.en_us: "%s Nugget", Lang.fr_fr: "Pépite de %s"},
+        ),
+        "custom_model_data_offset": 4,
+    },
+    "dust": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.dust",
+            {Lang.en_us: "%s Dust", Lang.fr_fr: "Poudre de %s"},
+        ),
+        "custom_model_data_offset": 7,
+    },
+}
+
+
+
+
+
+DEFAULT_TOOLS_ARGS: dict[ToolType, TypingToolArgs] = {
+    "pickaxe": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.pickaxe",
+            {Lang.en_us: "%s Pickaxe", Lang.fr_fr: "Pioche en %s"},
+        ),
+        "custom_model_data_offset": 10,
+    },
+    "axe": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.axe",
+            {Lang.en_us: "%s Axe", Lang.fr_fr: "Hache en %s"},
+        ),
+        "custom_model_data_offset": 11,
+    },
+    "shovel": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.shovel",
+            {Lang.en_us: "%s Shovel", Lang.fr_fr: "Pelle en %s"},
+        ),
+        "custom_model_data_offset": 12,
+    },
+    "hoe": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.hoe",
+            {Lang.en_us: "%s Hoe", Lang.fr_fr: "Houe en %s"},
+        ),
+        "custom_model_data_offset": 13,
+    },
+    "sword": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.sword",
+            {Lang.en_us: "%s Sword", Lang.fr_fr: "Épée en %s"},
+        ),
+        "custom_model_data_offset": 14,
+    },
+}
+
+
+DEFAULT_ARMOR_ARGS: dict[str, TypingArmorArgs] = {
+    "helmet": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.helmet",
+            {Lang.en_us: "%s Helmet", Lang.fr_fr: "Casque en %s"},
+        ),
+        "custom_model_data_offset": 15,
+        "type": "helmet"
+    },
+    "chestplate": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.chestplate",
+            {Lang.en_us: "%s Chestplate", Lang.fr_fr: "Plastron en %s"},
+        ),
+        "custom_model_data_offset": 16,
+        "type": "chestplate"
+    },
+    "leggings": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.leggings",
+            {Lang.en_us: "%s Leggings", Lang.fr_fr: "Jambières en %s"},
+        ),
+        "custom_model_data_offset": 17,
+        "type": "leggings"
+    },
+    "boots": {
+        "translation": (
+            f"{NAMESPACE}.mineral_name.boots",
+            {Lang.en_us: "%s Boots", Lang.fr_fr: "Bottes en %s"},
+        ),
+        "custom_model_data_offset": 18,
+        "type": "boots"
+    },
+}
+
+
 
 
 class SubItem(BaseModel):
@@ -78,7 +241,7 @@ class SubItem(BaseModel):
 
 class SubItemBlock(SubItem):
     block_properties: BlockProperties = field(
-        default_factory=lambda: BlockProperties({"base_block":"minecraft:lodestone"})
+        default_factory=lambda: {"base_block":"minecraft:lodestone"}
     )
 
     def get_base_item(self):
@@ -205,154 +368,6 @@ class SubItemTool(SubItemWeapon):
         return f"minecraft:{self.tier}_{self.type}"
 
 
-DEFAULT_MINERALS = {
-    "ore": SubItemBlock(
-        translation=(
-            f"{NAMESPACE}.mineral_name.ore",
-            {Lang.en_us: "%s Ore", Lang.fr_fr: "Minerai de %s"},
-        ),
-        custom_model_data_offset=0,
-        is_cookable=True,
-    ),
-    "deepslate_ore": SubItemBlock(
-        translation=(
-            f"{NAMESPACE}.mineral_name.deepslate_ore",
-            {Lang.en_us: "Deepslate %s Ore", Lang.fr_fr: "Minerai de deepslate de %s"},
-        ),
-        custom_model_data_offset=1,
-        is_cookable=True,
-    ),
-    "raw_ore": SubItem(
-        translation=(
-            f"{NAMESPACE}.mineral_name.raw_ore",
-            {Lang.en_us: "Raw %s Ore", Lang.fr_fr: "Minerai brut de %s"},
-        ),
-        custom_model_data_offset=2,
-        is_cookable=True,
-    ),
-    "ingot": SubItem(
-        translation=(
-            f"{NAMESPACE}.mineral_name.ingot",
-            {Lang.en_us: "%s Ingot", Lang.fr_fr: "Lingot de %s"},
-        ),
-        custom_model_data_offset=3,
-    ),
-    "nugget": SubItem(
-        translation=(
-            f"{NAMESPACE}.mineral_name.nugget",
-            {Lang.en_us: "%s Nugget", Lang.fr_fr: "Pépite de %s"},
-        ),
-        custom_model_data_offset=4,
-    ),
-    "raw_ore_block": SubItemBlock(
-        translation=(
-            f"{NAMESPACE}.mineral_name.raw_block",
-            {Lang.en_us: "Raw %s Block", Lang.fr_fr: "Bloc brut de %s"},
-        ),
-        custom_model_data_offset=5,
-    ),
-    "block": SubItemBlock(
-        translation=(
-            f"{NAMESPACE}.mineral_name.block",
-            {Lang.en_us: "%s Block", Lang.fr_fr: "Bloc de %s"},
-        ),
-        custom_model_data_offset=6,
-    ),
-    "dust": SubItem(
-        translation=(
-            f"{NAMESPACE}.mineral_name.dust",
-            {Lang.en_us: "%s Dust", Lang.fr_fr: "Poudre de %s"},
-        ),
-        custom_model_data_offset=7,
-        is_cookable=True,
-    ),
-}
-
-
-
-
-
-DEFAULT_TOOLS_ARGS: dict[ToolType, TypingToolArgs] = {
-    "pickaxe": {
-        "translation": (
-            f"{NAMESPACE}.mineral_name.pickaxe",
-            {Lang.en_us: "%s Pickaxe", Lang.fr_fr: "Pioche en %s"},
-        ),
-        "custom_model_data_offset": 10,
-    },
-    "axe": {
-        "translation": (
-            f"{NAMESPACE}.mineral_name.axe",
-            {Lang.en_us: "%s Axe", Lang.fr_fr: "Hache en %s"},
-        ),
-        "custom_model_data_offset": 11,
-    },
-    "shovel": {
-        "translation": (
-            f"{NAMESPACE}.mineral_name.shovel",
-            {Lang.en_us: "%s Shovel", Lang.fr_fr: "Pelle en %s"},
-        ),
-        "custom_model_data_offset": 12,
-    },
-    "hoe": {
-        "translation": (
-            f"{NAMESPACE}.mineral_name.hoe",
-            {Lang.en_us: "%s Hoe", Lang.fr_fr: "Houe en %s"},
-        ),
-        "custom_model_data_offset": 13,
-    },
-    "sword": {
-        "translation": (
-            f"{NAMESPACE}.mineral_name.sword",
-            {Lang.en_us: "%s Sword", Lang.fr_fr: "Épée en %s"},
-        ),
-        "custom_model_data_offset": 14,
-    },
-}
-
-class TypingArmorArgs(TypedDict):
-    armor: float
-    armor_toughness: float
-    max_damage: int
-    translation: TranslatedString
-    custom_model_data_offset: int
-    additional_attributes: dict[str, AttributeModifier]
-
-DEFAULT_ARMOR_ARGS: dict[str, TypingArmorArgs] = {
-    "helmet": {
-        "translation": (
-            f"{NAMESPACE}.mineral_name.helmet",
-            {Lang.en_us: "%s Helmet", Lang.fr_fr: "Casque en %s"},
-        ),
-        "custom_model_data_offset": 15,
-        "type": "helmet"
-    },
-    "chestplate": {
-        "translation": (
-            f"{NAMESPACE}.mineral_name.chestplate",
-            {Lang.en_us: "%s Chestplate", Lang.fr_fr: "Plastron en %s"},
-        ),
-        "custom_model_data_offset": 16,
-        "type": "chestplate"
-    },
-    "leggings": {
-        "translation": (
-            f"{NAMESPACE}.mineral_name.leggings",
-            {Lang.en_us: "%s Leggings", Lang.fr_fr: "Jambières en %s"},
-        ),
-        "custom_model_data_offset": 17,
-        "type": "leggings"
-    },
-    "boots": {
-        "translation": (
-            f"{NAMESPACE}.mineral_name.boots",
-            {Lang.en_us: "%s Boots", Lang.fr_fr: "Bottes en %s"},
-        ),
-        "custom_model_data_offset": 18,
-        "type": "boots"
-    },
-}
-
 @dataclass
 class Mineral:
     id: str
@@ -372,9 +387,14 @@ class Mineral:
         for item in self.items.keys():
             if not item in self.items:
                 continue
-            if self.items[item] is None and item in DEFAULT_MINERALS.keys():
-                subitem = DEFAULT_MINERALS[item]
-                subitem.export(ctx)
+            if item in DEFAULT_MINERALS_BLOCK_ARGS.keys():
+                args = DEFAULT_MINERALS_BLOCK_ARGS[item]
+                args.update(self.items[item])
+                subitem = SubItemBlock(**args)
+            elif item in DEFAULT_MINERALS_ITEM_ARGS.keys():
+                args = DEFAULT_MINERALS_ITEM_ARGS[item]
+                args.update(self.items[item])
+                subitem = SubItem(**args)
             elif item in DEFAULT_TOOLS_ARGS.keys():
                 args = DEFAULT_TOOLS_ARGS[item]
                 args.update(self.items[item])

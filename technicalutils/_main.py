@@ -12,14 +12,27 @@ def beet_default(ctx: Context):
         ),
         custom_model_data=1430000,
         items={
-            "ore": None,
-            "deepslate_ore": None,
-            "block": None,
-            "raw_ore_block": None,
-            "ingot": None,
-            "nugget": None,
-            "raw_ore": None,
-            "dust": None,
+            "ore": {
+                "block_properties": {
+                    "base_block": "minecraft:lodestone",
+                    "world_generation": {
+                        "min_y": 0,
+                        "max_y": 64,
+                        "min_veins": 30,
+                        "max_veins": 32,
+                        "min_vein_size": 4,
+                        "max_vein_size": 8,
+                        "ignore_restrictions": 0
+                    }
+                }
+            },
+            "deepslate_ore": {},
+            "block": {},
+            "raw_ore_block": {},
+            "ingot": {},
+            "nugget": {},
+            "raw_ore": {},
+            "dust": {},
             "pickaxe": {
                 "tier": "iron",
                 "speed": 4.8,

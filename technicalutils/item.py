@@ -7,6 +7,7 @@ from .utils import export_translated_string
 from beet.contrib.vanilla import Vanilla
 
 from nbtlib.tag import Compound, String, Byte
+from nbtlib import serialize_tag
 import json
 
 
@@ -23,7 +24,7 @@ class WorldGenerationParams(TypedDict):
     ignore_restrictions: Literal[0, 1]
     dimension: NotRequired[str]
     biome: NotRequired[str]
-    biome_blacklist: Literal["0b", "1b"]
+    biome_blacklist: NotRequired[Literal[0, 1]]
 
 class BlockProperties(TypedDict):
     base_block: str
@@ -159,7 +160,61 @@ class Item:
         if not self.block_properties.get("world_generation", None):
             return
         world_gen = self.block_properties["world_generation"]
-        print(world_gen)
+        registry = "technicalutils:impl/load_worldgen"
+        if registry not in ctx.data.functions:
+            ctx.data.functions[registry] = Function()
+        
+        args = Compound()
+        command = ""
+        if "dimension" in world_gen:
+            args["dimension"] = String(world_gen["dimension"])
+        if "biome" in world_gen:
+            args["biome"] = String(world_gen["biome"])
+        if "biome_blacklist" in world_gen:
+            args["biome_blacklist"] = Byte(world_gen["biome_blacklist"])
+        if len(args.keys()) > 0:
+            command = f"data modify storage chunk_scan.ores:registry input set value {serialize_tag(args)}"
+
+
+        ctx.data.functions[registry].append(f"""
+scoreboard players set #registry.min_y chunk_scan.ores.data {world_gen["min_y"]}
+scoreboard players set #registry.max_y chunk_scan.ores.data {world_gen["max_y"]}
+scoreboard players set #registry.min_veins chunk_scan.ores.data {world_gen["min_veins"]}
+scoreboard players set #registry.max_veins chunk_scan.ores.data {world_gen["max_veins"]}
+scoreboard players set #registry.min_vein_size chunk_scan.ores.data {world_gen["min_vein_size"]}
+scoreboard players set #registry.max_vein_size chunk_scan.ores.data {world_gen["max_vein_size"]}
+scoreboard players set #registry.ignore_restrictions chunk_scan.ores.data {world_gen["ignore_restrictions"]}
+
+{command}
+
+function chunk_scan.ores:v1/api/register_ore
+
+execute 
+    if score #registry.result_id chunk_scan.ores.data matches -1
+    run tellraw @a "Failed to register ore {self.id}"
+execute
+    unless score #registry.result_id chunk_scan.ores.data matches -1
+    run scoreboard players operation #{self.id} {NAMESPACE}.data = #registry.result_id chunk_scan.ores.data
+
+""")
+        
+        place_function_id_block = f"{NAMESPACE}:impl/smithed.custom_block/on_place/{self.id}"
+        place_function_tag_id_call = f"#{NAMESPACE}:calls/chunk_scan.ores/place_ore"
+        place_function_id = f"{NAMESPACE}:impl/chunk_scan.ores/place_ore"
+        chunk_scan_function_tag_id = f"chunk_scan.ores:v1/place_ore"
+        if chunk_scan_function_tag_id not in ctx.data.function_tags:
+            ctx.data.function_tags[chunk_scan_function_tag_id] = FunctionTag()
+        if place_function_id not in ctx.data.functions:
+            ctx.data.functions[place_function_id] = Function("# @public\n\n")
+            ctx.data.function_tags[chunk_scan_function_tag_id].data["values"].append(place_function_tag_id_call)
+        
+        ctx.data.functions[place_function_id].append(f"""
+execute
+    if score #{self.id} {NAMESPACE}.data = #gen.id chunk_scan.ores.data
+    run function {place_function_id_block}
+""")
+        
+
     
     def create_custom_block_placement(self, ctx: Context):
         smithed_function_tag_id = f"smithed.custom_block:event/on_place"
