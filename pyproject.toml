@@ -48,8 +48,8 @@ upload_to_vcs_release = true
 output = "build"
 
 pipeline = [
-    "technicalutils.mineral",
-    "technicalutils.export_items",
+    "technicalutils",
+    "technicalutils.export",
     "technicalutils.versioning",
     "mecha",
 ]
