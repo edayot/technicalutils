@@ -1,0 +1,10 @@
+{
+    "values": [
+      {"id": "#itemio:load","required": false}
+      ,{"id": "#nbt_smelting:load","required": false}
+      ,{"id": "#energy:load","required": false}
+      ,{"id": "#fluid:load","required": false}
+      ,{"id": "#smithed.crafter:load","required": false}
+    ]
+  }
+  

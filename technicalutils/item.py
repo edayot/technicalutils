@@ -31,6 +31,7 @@ class Item:
     custom_model_data: int = 1430000
 
     block_properties: BlockProperties = None
+    is_cookable: bool = False
 
     def __post_init__(self):
         assert self.id not in Registry, f"Item {self.id} already exists"
@@ -94,7 +95,12 @@ class Item:
         return lore
 
     def create_custom_data(self):
-        return {"smithed": {"id": f"{NAMESPACE}:{self.id}"}}
+        res = {
+            "smithed": {"id": f"{NAMESPACE}:{self.id}"},
+        }
+        if self.is_cookable:
+            res["nbt_smelting"] = Byte(1)
+        return res
 
     def create_block_placement_data(self):
         if self.block_properties:

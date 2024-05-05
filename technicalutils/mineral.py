@@ -6,7 +6,7 @@ from frozendict import frozendict
 from .utils import export_translated_string
 from .types import Lang, TranslatedString, NAMESPACE
 from .item import Item, BlockProperties, Registry
-from .crafting import ShapedRecipe, ShapelessRecipe
+from .crafting import ShapedRecipe, ShapelessRecipe, NBTSmelting
 
 from enum import Enum
 import json
@@ -39,6 +39,7 @@ class SubItem:
     translation: TranslatedString
     custom_model_data_offset: int
     block_properties: BlockProperties = None
+    is_cookable: bool = False
 
     def get_item_name(self, translation: TranslatedString):
         return {
@@ -74,6 +75,7 @@ DEFAULT_ITEMS_DEFINITION = {
             {Lang.en_us: "%s Ore", Lang.fr_fr: "Minerai de %s"},
         ),
         custom_model_data_offset=0,
+        is_cookable=True,
     ),
     "deepslate_ore": SubItemBlock(
         translation=(
@@ -81,6 +83,7 @@ DEFAULT_ITEMS_DEFINITION = {
             {Lang.en_us: "Deepslate %s Ore", Lang.fr_fr: "Minerai de deepslate de %s"},
         ),
         custom_model_data_offset=1,
+        is_cookable=True,
     ),
     "raw_ore": SubItem(
         translation=(
@@ -88,6 +91,7 @@ DEFAULT_ITEMS_DEFINITION = {
             {Lang.en_us: "Raw %s Ore", Lang.fr_fr: "Minerai brut de %s"},
         ),
         custom_model_data_offset=2,
+        is_cookable=True,
     ),
     "ingot": SubItem(
         translation=(
@@ -123,6 +127,7 @@ DEFAULT_ITEMS_DEFINITION = {
             {Lang.en_us: "%s Dust", Lang.fr_fr: "Poudre de %s"},
         ),
         custom_model_data_offset=7,
+        is_cookable=True,
     ),
 }
 
@@ -154,6 +159,7 @@ class Mineral:
                 components_extra=subitem.get_components(),
                 base_item=subitem.get_base_item(),
                 block_properties=subitem.block_properties,
+                is_cookable=subitem.is_cookable,
             )
         self.generate_crafting_recipes(ctx)
         return self
@@ -211,4 +217,9 @@ class Mineral:
         ShapelessRecipe(
             items=[(raw_ore_block, 1)],
             result=(raw_ore, 9),
+        ).export(ctx)
+
+        NBTSmelting(
+            item=raw_ore,
+            result=ingot,
         ).export(ctx)
