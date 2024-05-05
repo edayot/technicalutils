@@ -48,7 +48,8 @@ upload_to_vcs_release = true
 output = "build"
 
 pipeline = [
-    "technicalutils",
+    "technicalutils.mineral",
+    "technicalutils.export_items",
     "technicalutils.versioning",
     "mecha",
 ]
@@ -68,6 +69,7 @@ load = "."
 
 [tool.beet.meta]
 mc_supports = ["1.20.5"]
+minecraft_version = "1.20.5"
 
 [tool.beet.meta.mecha]
 multiline = true

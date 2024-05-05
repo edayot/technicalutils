@@ -103,7 +103,7 @@ DEFAULT_ITEMS_DEFINITION = {
         ),
         custom_model_data_offset=4,
     ),
-    "raw_block": SubItemBlock(
+    "raw_ore_block": SubItemBlock(
         translation=(
             f"{NAMESPACE}.mineral_name.raw_block",
             {Lang.en_us: "Raw %s Block", Lang.fr_fr: "Bloc brut de %s"},
@@ -116,6 +116,13 @@ DEFAULT_ITEMS_DEFINITION = {
             {Lang.en_us: "%s Block", Lang.fr_fr: "Bloc de %s"},
         ),
         custom_model_data_offset=6,
+    ),
+    "dust": SubItem(
+        translation=(
+            f"{NAMESPACE}.mineral_name.dust",
+            {Lang.en_us: "%s Dust", Lang.fr_fr: "Poudre de %s"},
+        ),
+        custom_model_data_offset=7,
     ),
 }
 
@@ -147,7 +154,7 @@ class Mineral:
                 components_extra=subitem.get_components(),
                 base_item=subitem.get_base_item(),
                 block_properties=subitem.block_properties,
-            ).export(ctx)
+            )
         self.generate_crafting_recipes(ctx)
         return self
     
@@ -156,7 +163,7 @@ class Mineral:
 
     def generate_crafting_recipes(self, ctx: Context):
         block = self.get_item("block")
-        raw_block = self.get_item("raw_block")
+        raw_ore_block = self.get_item("raw_ore_block")
         ingot = self.get_item("ingot")
         nugget = self.get_item("nugget")
         raw_ore = self.get_item("raw_ore")
@@ -170,7 +177,7 @@ class Mineral:
                 [raw_ore, raw_ore, raw_ore],
                 [raw_ore, raw_ore, raw_ore],
             ],
-            result=(raw_block,1),
+            result=(raw_ore_block,1),
         ).export(ctx)
 
         ShapedRecipe(
@@ -202,6 +209,6 @@ class Mineral:
         ).export(ctx)
 
         ShapelessRecipe(
-            items=[(raw_block, 1)],
+            items=[(raw_ore_block, 1)],
             result=(raw_ore, 9),
         ).export(ctx)

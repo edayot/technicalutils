@@ -1,8 +1,9 @@
 from dataclasses import dataclass, field
 from .types import TextComponent, TextComponent_base, NAMESPACE
-from beet import Context, FunctionTag, Function, LootTable
+from beet import Context, FunctionTag, Function, LootTable, Model
 from typing import Any
 from .utils import export_translated_string
+from beet.contrib.vanilla import Vanilla
 
 from nbtlib.tag import Compound, String, Byte
 import json
@@ -14,6 +15,7 @@ Registry: dict[str, "Item"] = {}
 @dataclass
 class BlockProperties:
     base_block: str
+    all_same_faces: bool = True
 
 
 @dataclass
@@ -29,6 +31,10 @@ class Item:
     custom_model_data: int = 1430000
 
     block_properties: BlockProperties = None
+
+    def __post_init__(self):
+        assert self.id not in Registry, f"Item {self.id} already exists"
+        Registry[self.id] = self
 
     def result_command(self, count: int) -> str:    
         loot_table_name = f"{NAMESPACE}:items/{self.id}"
@@ -153,6 +159,7 @@ execute
                 data modify entity @s item set value {{id:"{self.base_item}",count:1,components:{{"minecraft:custom_model_data":{self.custom_model_data}}}}}
 
                 data merge entity @s {{transformation:{{scale:[1.001f,1.001f,1.001f]}}}}
+                data merge entity @s {{brightness:{{sky:10,block:15}}}}
 """
         )
         loot_table_name = f"{NAMESPACE}:items/{self.id}"
@@ -220,9 +227,56 @@ kill @s
             }
         )
 
+    def create_assets(self, ctx: Context):
+        key = f"minecraft:item/{self.base_item.split(':')[1]}"
+        if not key in ctx.assets.models:
+            vanilla = ctx.inject(Vanilla).releases[ctx.meta["minecraft_version"]]
+            # get the default model for this item
+            ctx.assets.models[key] = vanilla.assets.models[key]
+            ctx.assets.models[key].data["overrides"] = []
+        
+        # add the custom model data to the model
+        ctx.assets.models[key].data["overrides"].append({
+            "predicate": {
+            "custom_model_data": self.custom_model_data
+            },
+            "model": (model_path := f"{NAMESPACE}:item/{self.id}")
+        })
+        # create the custom model
+        if not self.block_properties:
+            ctx.assets.models[model_path] = Model(
+                {
+                    "parent": "item/generated",
+                    "textures": {
+                        "layer0": model_path
+                    }
+                }
+            )
+        elif self.block_properties.all_same_faces:
+            ctx.assets.models[model_path] = Model(
+                {
+                    "parent": "minecraft:block/cube_all",
+                    "textures": {
+                        "all": f"{NAMESPACE}:block/{self.id}"
+                    }
+                }
+            )
+        else:
+            ctx.assets.models[model_path] = Model(
+                {
+                    "parent": "minecraft:block/orientable_with_bottom",
+                    "textures": {
+                        "top": f"{NAMESPACE}:block/{self.id}_top",
+                        "side": f"{NAMESPACE}:block/{self.id}_side",
+                        "bottom": f"{NAMESPACE}:block/{self.id}_bottom",
+                        "front": f"{NAMESPACE}:block/{self.id}_front",
+                    }
+                }
+            )
+            
+
     def export(self, ctx: Context):
-        assert self.id not in Registry, f"Item {self.id} already exists"
-        Registry[self.id] = self
         self.create_loot_table(ctx)
         self.create_translation(ctx)
         self.create_custom_block(ctx)
+        self.create_assets(ctx)
