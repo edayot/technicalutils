@@ -175,6 +175,7 @@ class Mineral:
         raw_ore = self.get_item("raw_ore")
         ore = self.get_item("ore")
         deepslate_ore = self.get_item("deepslate_ore")
+        dust = self.get_item("dust")
         
 
         ShapedRecipe(
@@ -221,5 +222,26 @@ class Mineral:
 
         NBTSmelting(
             item=raw_ore,
-            result=ingot,
+            result=(ingot,1),
+            types=["furnace","blast_furnace"],
         ).export(ctx)
+
+        NBTSmelting(
+            item=ore,
+            result=(ingot,1),
+            types=["furnace","blast_furnace"],
+        ).export(ctx)
+
+        NBTSmelting(
+            item=deepslate_ore,
+            result=(ingot,1),
+            types=["furnace","blast_furnace"],
+        ).export(ctx)
+
+        NBTSmelting(
+            item=dust,
+            result=(ingot,2),
+            types=["furnace","blast_furnace"],
+        ).export(ctx)
+
+

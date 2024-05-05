@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from nbtlib import serialize_tag
 from nbtlib.tag import (
     String,
@@ -122,18 +122,31 @@ execute
 @dataclass
 class NBTSmelting():
     item : Item | VanillaItem
-    result: Item | VanillaItem
-    type: Literal["furnace", "blast_furnace", "smoker"] = "furnace"
+    result: tuple[Item | VanillaItem, int]
+    types: list[Literal["furnace", "blast_furnace", "smoker"]] = field(default_factory=lambda: ["furnace"])
 
     def export(self, ctx: Context):
         """
         This function export the NBTSmelting recipes to the ctx variable.
         """
+        for type in self.types:
+            self.export_type(ctx, type)
+    
+    def type_to_crafting_type(self, type: str):
+        if type == "furnace":
+            return "smelting"
+        if type == "blast_furnace":
+            return "blasting"
+        if type == "smoker":
+            return "smoking"
+        return "smelting"
+
+    def export_type(self, ctx: Context, type: str):
         recipe = self.item.to_nbt(0)
         del recipe["Slot"]
         recipe = serialize_tag(recipe)
 
-        result_command = self.result.result_command(1)
+        result_command = self.result[0].result_command(self.result[1])
 
         command = f"""
 execute 
@@ -142,19 +155,19 @@ execute
         execute positioned -30000000 23 1610 run {result_command}
         item replace block ~ ~ ~ container.2 from block -30000000 23 1610 container.16
 """
-        function_path = f"{NAMESPACE}:impl/nbt_smelting/{self.type}"
-        tag_nbt_smelting_furnace = f"nbt_smelting:v1/{self.type}"
+        function_path = f"{NAMESPACE}:impl/nbt_smelting/{type}"
+        tag_nbt_smelting_furnace = f"nbt_smelting:v1/{type}"
         if not tag_nbt_smelting_furnace in ctx.data.function_tags:
             ctx.data.function_tags[tag_nbt_smelting_furnace] = FunctionTag()
         if function_path not in ctx.data.functions:
             ctx.data.functions[function_path] = Function("# @public\n\n")
-            ctx.data.function_tags[tag_nbt_smelting_furnace].data["values"].append(f"#{NAMESPACE}:calls/nbt_smelting/{self.type}")
+            ctx.data.function_tags[tag_nbt_smelting_furnace].data["values"].append(f"#{NAMESPACE}:calls/nbt_smelting/{type}")
         
         ctx.data.functions[function_path].append(command)
 
         if isinstance(self.item, Item):
-            ctx.data.recipes[f"{NAMESPACE}:{self.item.base_item.replace('minecraft:','')}"] = Recipe({
-                "type": "minecraft:smelting",
+            ctx.data.recipes[f"{NAMESPACE}:{self.item.base_item.replace('minecraft:','')}/{self.type_to_crafting_type(type)}"] = Recipe({
+                "type": f"minecraft:{self.type_to_crafting_type(type)}",
                 "ingredient": {
                     "item": self.item.base_item
                 },
