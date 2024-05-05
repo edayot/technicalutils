@@ -6,7 +6,7 @@ from frozendict import frozendict
 from .utils import export_translated_string, generate_uuid
 from .types import Lang, TranslatedString, NAMESPACE
 from .item import Item, BlockProperties, Registry
-from .crafting import ShapedRecipe, ShapelessRecipe, NBTSmelting
+from .crafting import ShapedRecipe, ShapelessRecipe, NBTSmelting, VanillaItem
 
 from pydantic import BaseModel
 
@@ -295,7 +295,7 @@ class Mineral:
         return self
 
     def get_item(self, item: str):
-        return Registry[f"{self.id}_{item}"]
+        return Registry.get(f"{self.id}_{item}", None)
 
     def generate_crafting_recipes(self, ctx: Context):
         block = self.get_item("block")
@@ -372,3 +372,51 @@ class Mineral:
             result=(ingot, 2),
             types=["furnace", "blast_furnace"],
         ).export(ctx)
+
+        if pickaxe := self.get_item("pickaxe"):
+            ShapedRecipe(
+                items=[
+                    [ingot, ingot, ingot],
+                    [None, VanillaItem("minecraft:stick"), None],
+                    [None, VanillaItem("minecraft:stick"), None],
+                ],
+                result=(pickaxe, 1),
+            ).export(ctx)
+        if axe := self.get_item("axe"):
+            ShapedRecipe(
+                items=[
+                    [ingot, ingot, None],
+                    [ingot, VanillaItem("minecraft:stick"), None],
+                    [None, VanillaItem("minecraft:stick"), None],
+                ],
+                result=(axe, 1),
+            ).export(ctx)
+        if shovel := self.get_item("shovel"):
+            ShapedRecipe(
+                items=[
+                    [ingot, None, None],
+                    [VanillaItem("minecraft:stick"), None, None],
+                    [VanillaItem("minecraft:stick"), None, None],
+                ],
+                result=(shovel, 1),
+            ).export(ctx)
+        if hoe := self.get_item("hoe"):
+            ShapedRecipe(
+                items=[
+                    [ingot, ingot, None],
+                    [None, VanillaItem("minecraft:stick"), None],
+                    [None, VanillaItem("minecraft:stick"), None],
+                ],
+                result=(hoe, 1),
+            ).export(ctx)
+        if sword := self.get_item("sword"):
+            ShapedRecipe(
+                items=[
+                    [ingot, None, None],
+                    [ingot, None, None],
+                    [VanillaItem("minecraft:stick"), None, None],
+                ],
+                result=(sword, 1),
+            ).export(ctx)
+        
+
