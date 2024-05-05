@@ -5,7 +5,8 @@ from typing import Any
 from frozendict import frozendict
 from .utils import export_translated_string
 from .types import Lang, TranslatedString, NAMESPACE
-from .item import Item, BlockProperties
+from .item import Item, BlockProperties, Registry
+from .crafting import ShapedRecipe, ShapelessRecipe
 
 from enum import Enum
 import json
@@ -147,7 +148,60 @@ class Mineral:
                 base_item=subitem.get_base_item(),
                 block_properties=subitem.block_properties,
             ).export(ctx)
+        self.generate_crafting_recipes(ctx)
         return self
+    
+    def get_item(self, item: str):
+        return Registry[f"{self.id}_{item}"]
 
     def generate_crafting_recipes(self, ctx: Context):
-        pass
+        block = self.get_item("block")
+        raw_block = self.get_item("raw_block")
+        ingot = self.get_item("ingot")
+        nugget = self.get_item("nugget")
+        raw_ore = self.get_item("raw_ore")
+        ore = self.get_item("ore")
+        deepslate_ore = self.get_item("deepslate_ore")
+        
+
+        ShapedRecipe(
+            items=[
+                [raw_ore, raw_ore, raw_ore],
+                [raw_ore, raw_ore, raw_ore],
+                [raw_ore, raw_ore, raw_ore],
+            ],
+            result=(raw_block,1),
+        ).export(ctx)
+
+        ShapedRecipe(
+            items=[
+                [ingot, ingot, ingot],
+                [ingot, ingot, ingot],
+                [ingot, ingot, ingot],
+            ],
+            result=(block,1),
+        ).export(ctx)
+
+        ShapedRecipe(
+            items=[
+                [nugget, nugget, nugget],
+                [nugget, nugget, nugget],
+                [nugget, nugget, nugget],
+            ],
+            result=(ingot,1),
+        ).export(ctx)
+
+        ShapelessRecipe(
+            items=[(ingot, 1)],
+            result=(nugget, 9),
+        ).export(ctx)
+
+        ShapelessRecipe(
+            items=[(block, 1)],
+            result=(ingot, 9),
+        ).export(ctx)
+
+        ShapelessRecipe(
+            items=[(raw_block, 1)],
+            result=(raw_ore, 9),
+        ).export(ctx)

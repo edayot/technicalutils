@@ -49,6 +49,7 @@ output = "build"
 
 pipeline = [
     "technicalutils",
+    "technicalutils.versioning",
     "mecha",
 ]
 require=[
@@ -99,3 +100,25 @@ source = "smithed"
 id = "fluid_crafting"
 match = ">=1.5.0"
 source = "smithed"
+
+
+
+[tool.beet.meta.smithed.versioning]
+scheduled_paths="impl/tick"
+
+[tool.beet.meta.smithed.versioning.lantern_load]
+step="load"
+tag_path="load"
+function_path="impl/test_load"
+
+[tool.beet.meta.smithed.versioning.refactor]
+match="{{ project_id }}:*"
+find="{{ project_id }}:impl/"
+replace="{{ project_id }}:v{{ version }}/"
+
+
+[tool.beet.meta.smithed.versioning.api]
+match="{{ project_id }}:v{{ version }}"
+implementation_prefix="{{ project_id }}:v{{ version }}/"
+version_check_path="v{{ version }}/calls"
+tag_path="calls"

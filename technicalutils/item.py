@@ -4,6 +4,9 @@ from beet import Context, FunctionTag, Function, LootTable
 from typing import Any
 from .utils import export_translated_string
 
+from nbtlib.tag import Compound, String, Byte
+import json
+
 
 Registry: dict[str, "Item"] = {}
 
@@ -26,6 +29,47 @@ class Item:
     custom_model_data: int = 1430000
 
     block_properties: BlockProperties = None
+
+    def result_command(self, count: int) -> str:    
+        loot_table_name = f"{NAMESPACE}:items/{self.id}"
+        if count == 1:
+            return f"loot replace block ~ ~ ~ container.16 loot {loot_table_name}"
+        loot_table_inline = {
+            "pools": [
+                {
+                    "rolls": 1,
+                    "entries": [
+                        {
+                            "type": "minecraft:loot_table",
+                            "value": loot_table_name,
+                            "functions": [
+                                {
+                                    "function": "minecraft:set_count",
+                                    "count": count
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+
+        return f"loot replace block ~ ~ ~ container.16 loot {json.dumps(loot_table_inline)}"
+
+    def to_nbt(self, i: int) -> Compound:
+        # return the nbt tag of the item smithed id "SelectedItem.components."minecraft:custom_data".smithed.id"
+        return Compound(
+            {
+                "components": Compound(
+                    {
+                        "minecraft:custom_data": Compound(
+                            {"smithed": Compound({"id": String(f"{NAMESPACE}:{self.id}")})}
+                        )
+                    }
+                ),
+                "Slot": Byte(i), 
+            }
+        )
 
     def create_translation(self, ctx: Context):
         # add the translations to the languages files for item_name
@@ -84,11 +128,11 @@ class Item:
         if smithed_function_tag_id not in ctx.data.function_tags:
             ctx.data.function_tags[smithed_function_tag_id] = FunctionTag()
             ctx.data.function_tags[smithed_function_tag_id].data["values"].append(
-                internal_function_id
+                f"#{NAMESPACE}:calls/smithed.custom_block/on_place"
             )
 
         if internal_function_id not in ctx.data.functions:
-            ctx.data.functions[internal_function_id] = Function()
+            ctx.data.functions[internal_function_id] = Function("# @public\n\n")
 
         ctx.data.functions[internal_function_id].append(
             f"""
@@ -111,6 +155,22 @@ execute
                 data merge entity @s {{transformation:{{scale:[1.001f,1.001f,1.001f]}}}}
 """
         )
+        loot_table_name = f"{NAMESPACE}:items/{self.id}"
+        destroy_function_id = f"{NAMESPACE}:impl/blocks/destroy/{self.id}"
+        ctx.data.functions[destroy_function_id] = Function(f"""
+
+execute
+    as @e[type=item,nbt={{Item:{{id:"{self.block_properties.base_block}",count:1}}}},limit=1,sort=nearest,distance=..3]
+    run function ~/spawn_item:
+        loot spawn ~ ~ ~ loot {loot_table_name}
+        kill @s
+
+kill @s
+""")
+        all_same_function_id = f"{NAMESPACE}:impl/blocks/destroy_{self.block_properties.base_block.replace('minecraft:', '')}"
+        if all_same_function_id not in ctx.data.functions:
+            ctx.data.functions[all_same_function_id] = Function()
+        ctx.data.functions[all_same_function_id].append(f"execute if entity @s[tag={NAMESPACE}.block.{self.block_properties.base_block.replace('minecraft:', '')}] run function {destroy_function_id}")
 
     def set_components(self):
         res = []
