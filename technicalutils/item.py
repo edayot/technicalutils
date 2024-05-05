@@ -37,7 +37,7 @@ class Item:
         assert self.id not in Registry, f"Item {self.id} already exists"
         Registry[self.id] = self
 
-    def result_command(self, count: int) -> str:    
+    def result_command(self, count: int) -> str:
         loot_table_name = f"{NAMESPACE}:items/{self.id}"
         if count == 1:
             return f"loot replace block ~ ~ ~ container.16 loot {loot_table_name}"
@@ -50,13 +50,10 @@ class Item:
                             "type": "minecraft:loot_table",
                             "value": loot_table_name,
                             "functions": [
-                                {
-                                    "function": "minecraft:set_count",
-                                    "count": count
-                                }
-                            ]
+                                {"function": "minecraft:set_count", "count": count}
+                            ],
                         }
-                    ]
+                    ],
                 }
             ]
         }
@@ -70,11 +67,15 @@ class Item:
                 "components": Compound(
                     {
                         "minecraft:custom_data": Compound(
-                            {"smithed": Compound({"id": String(f"{NAMESPACE}:{self.id}")})}
+                            {
+                                "smithed": Compound(
+                                    {"id": String(f"{NAMESPACE}:{self.id}")}
+                                )
+                            }
                         )
                     }
                 ),
-                "Slot": Byte(i), 
+                "Slot": Byte(i),
             }
         )
 
@@ -170,7 +171,8 @@ execute
         )
         loot_table_name = f"{NAMESPACE}:items/{self.id}"
         destroy_function_id = f"{NAMESPACE}:impl/blocks/destroy/{self.id}"
-        ctx.data.functions[destroy_function_id] = Function(f"""
+        ctx.data.functions[destroy_function_id] = Function(
+            f"""
 
 execute
     as @e[type=item,nbt={{Item:{{id:"{self.block_properties.base_block}",count:1}}}},limit=1,sort=nearest,distance=..3]
@@ -179,11 +181,14 @@ execute
         kill @s
 
 kill @s
-""")
+"""
+        )
         all_same_function_id = f"{NAMESPACE}:impl/blocks/destroy_{self.block_properties.base_block.replace('minecraft:', '')}"
         if all_same_function_id not in ctx.data.functions:
             ctx.data.functions[all_same_function_id] = Function()
-        ctx.data.functions[all_same_function_id].append(f"execute if entity @s[tag={NAMESPACE}.block.{self.block_properties.base_block.replace('minecraft:', '')}] run function {destroy_function_id}")
+        ctx.data.functions[all_same_function_id].append(
+            f"execute if entity @s[tag={NAMESPACE}.block.{self.block_properties.base_block.replace('minecraft:', '')}] run function {destroy_function_id}"
+        )
 
     def set_components(self):
         res = []
@@ -240,31 +245,24 @@ kill @s
             # get the default model for this item
             ctx.assets.models[key] = vanilla.assets.models[key]
             ctx.assets.models[key].data["overrides"] = []
-        
+
         # add the custom model data to the model
-        ctx.assets.models[key].data["overrides"].append({
-            "predicate": {
-            "custom_model_data": self.custom_model_data
-            },
-            "model": (model_path := f"{NAMESPACE}:item/{self.id}")
-        })
+        ctx.assets.models[key].data["overrides"].append(
+            {
+                "predicate": {"custom_model_data": self.custom_model_data},
+                "model": (model_path := f"{NAMESPACE}:item/{self.id}"),
+            }
+        )
         # create the custom model
         if not self.block_properties:
             ctx.assets.models[model_path] = Model(
-                {
-                    "parent": "item/generated",
-                    "textures": {
-                        "layer0": model_path
-                    }
-                }
+                {"parent": "item/generated", "textures": {"layer0": model_path}}
             )
         elif self.block_properties.all_same_faces:
             ctx.assets.models[model_path] = Model(
                 {
                     "parent": "minecraft:block/cube_all",
-                    "textures": {
-                        "all": f"{NAMESPACE}:block/{self.id}"
-                    }
+                    "textures": {"all": f"{NAMESPACE}:block/{self.id}"},
                 }
             )
         else:
@@ -276,10 +274,9 @@ kill @s
                         "side": f"{NAMESPACE}:block/{self.id}_side",
                         "bottom": f"{NAMESPACE}:block/{self.id}_bottom",
                         "front": f"{NAMESPACE}:block/{self.id}_front",
-                    }
+                    },
                 }
             )
-            
 
     def export(self, ctx: Context):
         self.create_loot_table(ctx)

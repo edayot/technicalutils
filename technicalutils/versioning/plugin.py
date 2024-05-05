@@ -7,7 +7,6 @@ from .load import generate_load
 from .models import ContextualModel, Versioning
 
 
-
 def inject_version(ctx: Context):
     opts = ctx.inject(Versioning).opts
 

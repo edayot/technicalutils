@@ -41,6 +41,6 @@ def generate_api(ctx: Context):
     query = ctx.query(match=opts.api.match, extend=Function)
     if not Function in query:
         return
-    for (path, func) in query[Function].keys():
+    for path, func in query[Function].keys():
         if func.lines and path is not None and PUBLIC_PAT.match(func.lines[0]):
             generate_call(ctx, opts, path)

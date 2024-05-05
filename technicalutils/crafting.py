@@ -18,7 +18,6 @@ from .item import Item
 from .types import NAMESPACE
 
 
-
 @dataclass
 class VanillaItem:
     id: str
@@ -32,7 +31,7 @@ class VanillaItem:
 
 @dataclass
 class ShapedRecipe:
-    items: list[list[Item | VanillaItem | None]] 
+    items: list[list[Item | VanillaItem | None]]
     result: tuple[Item | VanillaItem, int]
 
     def export(self, ctx: Context):
@@ -52,8 +51,9 @@ class ShapedRecipe:
 
         if len(self.items) < 3:
             for i in range(len(self.items), 3):
-                if_data_storage += f"\n\tif data storage smithed.crafter:input {{{i}:[]}}"
-
+                if_data_storage += (
+                    f"\n\tif data storage smithed.crafter:input {{{i}:[]}}"
+                )
 
         function_path = f"{NAMESPACE}:impl/smithed.crafter/recipes"
         command = f"""
@@ -68,14 +68,14 @@ execute
             ctx.data.function_tags[tag_smithed_crafter_recipes] = FunctionTag()
         if function_path not in ctx.data.functions:
             ctx.data.functions[function_path] = Function("# @public\n\n")
-            ctx.data.functions[function_path].append("data modify storage test test set from storage smithed.crafter:input")
-            ctx.data.function_tags[tag_smithed_crafter_recipes].data["values"].append(f"#{NAMESPACE}:calls/smithed.crafter/recipes")
+            ctx.data.functions[function_path].append(
+                "data modify storage test test set from storage smithed.crafter:input"
+            )
+            ctx.data.function_tags[tag_smithed_crafter_recipes].data["values"].append(
+                f"#{NAMESPACE}:calls/smithed.crafter/recipes"
+            )
 
         ctx.data.functions[function_path].append(command)
-
-
-
-
 
 
 @dataclass
@@ -98,7 +98,6 @@ class ShapelessRecipe:
 
         result_command = self.result[0].result_command(self.result[1])
 
-
         command = f"""
 execute 
     store result score @s smithed.data 
@@ -108,22 +107,29 @@ execute
     run {result_command}
 """
         function_path = f"{NAMESPACE}:impl/smithed.crafter/shapeless_recipes"
-        tag_smithed_crafter_shapeless_recipes = "smithed.crafter:event/shapeless_recipes"
+        tag_smithed_crafter_shapeless_recipes = (
+            "smithed.crafter:event/shapeless_recipes"
+        )
         if not tag_smithed_crafter_shapeless_recipes in ctx.data.function_tags:
-            ctx.data.function_tags[tag_smithed_crafter_shapeless_recipes] = FunctionTag()
+            ctx.data.function_tags[
+                tag_smithed_crafter_shapeless_recipes
+            ] = FunctionTag()
         if function_path not in ctx.data.functions:
             ctx.data.functions[function_path] = Function("# @public\n\n")
-            ctx.data.function_tags[tag_smithed_crafter_shapeless_recipes].data["values"].append(f"#{NAMESPACE}:calls/smithed.crafter/shapeless_recipes")
-        
+            ctx.data.function_tags[tag_smithed_crafter_shapeless_recipes].data[
+                "values"
+            ].append(f"#{NAMESPACE}:calls/smithed.crafter/shapeless_recipes")
+
         ctx.data.functions[function_path].append(command)
 
-        
 
 @dataclass
-class NBTSmelting():
-    item : Item | VanillaItem
+class NBTSmelting:
+    item: Item | VanillaItem
     result: tuple[Item | VanillaItem, int]
-    types: list[Literal["furnace", "blast_furnace", "smoker"]] = field(default_factory=lambda: ["furnace"])
+    types: list[Literal["furnace", "blast_furnace", "smoker"]] = field(
+        default_factory=lambda: ["furnace"]
+    )
 
     def export(self, ctx: Context):
         """
@@ -131,7 +137,7 @@ class NBTSmelting():
         """
         for type in self.types:
             self.export_type(ctx, type)
-    
+
     def type_to_crafting_type(self, type: str):
         if type == "furnace":
             return "smelting"
@@ -161,17 +167,21 @@ execute
             ctx.data.function_tags[tag_nbt_smelting_furnace] = FunctionTag()
         if function_path not in ctx.data.functions:
             ctx.data.functions[function_path] = Function("# @public\n\n")
-            ctx.data.function_tags[tag_nbt_smelting_furnace].data["values"].append(f"#{NAMESPACE}:calls/nbt_smelting/{type}")
-        
+            ctx.data.function_tags[tag_nbt_smelting_furnace].data["values"].append(
+                f"#{NAMESPACE}:calls/nbt_smelting/{type}"
+            )
+
         ctx.data.functions[function_path].append(command)
 
         if isinstance(self.item, Item):
-            ctx.data.recipes[f"{NAMESPACE}:{self.item.base_item.replace('minecraft:','')}/{self.type_to_crafting_type(type)}"] = Recipe({
-                "type": f"minecraft:{self.type_to_crafting_type(type)}",
-                "ingredient": {
-                    "item": self.item.base_item
-                },
-                "result": {
-                    "id": self.item.base_item,
+            ctx.data.recipes[
+                f"{NAMESPACE}:{self.item.base_item.replace('minecraft:','')}/{self.type_to_crafting_type(type)}"
+            ] = Recipe(
+                {
+                    "type": f"minecraft:{self.type_to_crafting_type(type)}",
+                    "ingredient": {"item": self.item.base_item},
+                    "result": {
+                        "id": self.item.base_item,
+                    },
                 }
-            })
+            )

@@ -14,7 +14,7 @@ from enum import Enum
 import json
 
 Mineral_list: list["Mineral"] = []
-ToolType = Literal["pickaxe","axe","shovel","hoe","sword"]
+ToolType = Literal["pickaxe", "axe", "shovel", "hoe", "sword"]
 
 
 class SubItem(BaseModel):
@@ -49,9 +49,8 @@ class SubItemBlock(SubItem):
         return "minecraft:furnace"
 
 
-
 class SubItemDamagable(SubItem):
-    max_damage: int 
+    max_damage: int
 
     def get_components(self):
         return {
@@ -66,59 +65,64 @@ class SubItemWeapon(SubItemDamagable):
 
     def get_components(self):
         res = super().get_components()
-        res.update({
-            "minecraft:attribute_modifiers": {
-                "modifiers": [
-                {
-                    "type": "minecraft:generic.attack_damage",
-                    "amount": self.attack_damage,
-                    "name": "Tool modifier",
-                    "operation": "add_value",
-                    "slot": "mainhand",
-                    "uuid": generate_uuid(),
-                },
-                {
-                    "type": "minecraft:generic.attack_speed",
-                    "amount": self.attack_speed,
-                    "name": "Tool modifier",
-                    "operation": "add_value",
-                    "slot": "mainhand",
-                    "uuid": generate_uuid(),
+        res.update(
+            {
+                "minecraft:attribute_modifiers": {
+                    "modifiers": [
+                        {
+                            "type": "minecraft:generic.attack_damage",
+                            "amount": self.attack_damage,
+                            "name": "Tool modifier",
+                            "operation": "add_value",
+                            "slot": "mainhand",
+                            "uuid": generate_uuid(),
+                        },
+                        {
+                            "type": "minecraft:generic.attack_speed",
+                            "amount": self.attack_speed,
+                            "name": "Tool modifier",
+                            "operation": "add_value",
+                            "slot": "mainhand",
+                            "uuid": generate_uuid(),
+                        },
+                    ]
                 }
-                ]
             }
-        })
+        )
         return res
+
 
 class SubItemTool(SubItemWeapon):
     type: ToolType
-    tier: Literal["wooden","stone","iron","golden","diamond","netherite"] = "wooden"
-    speed : float = 2.0
-
+    tier: Literal[
+        "wooden", "stone", "iron", "golden", "diamond", "netherite"
+    ] = "wooden"
+    speed: float = 2.0
 
     def get_components(self):
         res = super().get_components()
-        res.update({
-            "minecraft:tool": {
-                "rules": [
-                    {
-                        "blocks": f"#minecraft:incorrect_for_{self.tier}_tool",
-                        "correct_for_drops": False,
-                    },
-                    {
-                        "blocks": "#minecraft:mineable/pickaxe",
-                        "correct_for_drops": True,
-                        "speed": self.speed,
-                    }
-                ],
-                "damage_per_block": 1,
+        res.update(
+            {
+                "minecraft:tool": {
+                    "rules": [
+                        {
+                            "blocks": f"#minecraft:incorrect_for_{self.tier}_tool",
+                            "correct_for_drops": False,
+                        },
+                        {
+                            "blocks": "#minecraft:mineable/pickaxe",
+                            "correct_for_drops": True,
+                            "speed": self.speed,
+                        },
+                    ],
+                    "damage_per_block": 1,
+                }
             }
-        })
+        )
         return res
-    
+
     def get_base_item(self):
         return f"minecraft:{self.tier}_{self.type}"
-
 
 
 DEFAULT_MINERALS = {
@@ -184,16 +188,18 @@ DEFAULT_MINERALS = {
     ),
 }
 
+
 class TypingToolArgs(TypedDict):
     attack_damage: float
     attack_speed: float
     max_damage: int
     speed: float
-    tier: Literal["wooden","stone","iron","golden","diamond","netherite"]
+    tier: Literal["wooden", "stone", "iron", "golden", "diamond", "netherite"]
     translation: TranslatedString
     custom_model_data_offset: int
 
-DEFAULT_TOOLS_ARGS : dict[ToolType,TypingToolArgs] = {
+
+DEFAULT_TOOLS_ARGS: dict[ToolType, TypingToolArgs] = {
     "pickaxe": {
         "translation": (
             f"{NAMESPACE}.mineral_name.pickaxe",
@@ -229,10 +235,7 @@ DEFAULT_TOOLS_ARGS : dict[ToolType,TypingToolArgs] = {
         ),
         "custom_model_data_offset": 14,
     },
-
 }
-
-
 
 
 @dataclass
@@ -241,11 +244,10 @@ class Mineral:
     name: TranslatedString
     custom_model_data: int
 
-    items: dict[ToolType,TypingToolArgs] = field(default_factory=lambda: {})
+    items: dict[ToolType, TypingToolArgs] = field(default_factory=lambda: {})
 
     def __post_init__(self):
         Mineral_list.append(self)
-
 
     def export(self, ctx: Context):
         export_translated_string(ctx, self.name)
@@ -261,7 +263,8 @@ class Mineral:
                 Item(
                     id=f"{self.id}_{item}",
                     item_name=subitem.get_item_name(self.name),
-                    custom_model_data=self.custom_model_data + subitem.custom_model_data_offset,
+                    custom_model_data=self.custom_model_data
+                    + subitem.custom_model_data_offset,
                     components_extra=subitem.get_components(),
                     base_item=subitem.get_base_item(),
                     block_properties=subitem.block_properties,
@@ -280,17 +283,17 @@ class Mineral:
                 Item(
                     id=f"{self.id}_{item}",
                     item_name=subitem.get_item_name(self.name),
-                    custom_model_data=self.custom_model_data + subitem.custom_model_data_offset,
+                    custom_model_data=self.custom_model_data
+                    + subitem.custom_model_data_offset,
                     components_extra=subitem.get_components(),
                     base_item=subitem.get_base_item(),
                     block_properties=subitem.block_properties,
                     is_cookable=subitem.is_cookable,
                 )
-                
-                    
+
         self.generate_crafting_recipes(ctx)
         return self
-    
+
     def get_item(self, item: str):
         return Registry[f"{self.id}_{item}"]
 
@@ -303,7 +306,6 @@ class Mineral:
         ore = self.get_item("ore")
         deepslate_ore = self.get_item("deepslate_ore")
         dust = self.get_item("dust")
-        
 
         ShapedRecipe(
             items=[
@@ -311,7 +313,7 @@ class Mineral:
                 [raw_ore, raw_ore, raw_ore],
                 [raw_ore, raw_ore, raw_ore],
             ],
-            result=(raw_ore_block,1),
+            result=(raw_ore_block, 1),
         ).export(ctx)
 
         ShapedRecipe(
@@ -320,7 +322,7 @@ class Mineral:
                 [ingot, ingot, ingot],
                 [ingot, ingot, ingot],
             ],
-            result=(block,1),
+            result=(block, 1),
         ).export(ctx)
 
         ShapedRecipe(
@@ -329,7 +331,7 @@ class Mineral:
                 [nugget, nugget, nugget],
                 [nugget, nugget, nugget],
             ],
-            result=(ingot,1),
+            result=(ingot, 1),
         ).export(ctx)
 
         ShapelessRecipe(
@@ -349,26 +351,24 @@ class Mineral:
 
         NBTSmelting(
             item=raw_ore,
-            result=(ingot,1),
-            types=["furnace","blast_furnace"],
+            result=(ingot, 1),
+            types=["furnace", "blast_furnace"],
         ).export(ctx)
 
         NBTSmelting(
             item=ore,
-            result=(ingot,1),
-            types=["furnace","blast_furnace"],
+            result=(ingot, 1),
+            types=["furnace", "blast_furnace"],
         ).export(ctx)
 
         NBTSmelting(
             item=deepslate_ore,
-            result=(ingot,1),
-            types=["furnace","blast_furnace"],
+            result=(ingot, 1),
+            types=["furnace", "blast_furnace"],
         ).export(ctx)
 
         NBTSmelting(
             item=dust,
-            result=(ingot,2),
-            types=["furnace","blast_furnace"],
+            result=(ingot, 2),
+            types=["furnace", "blast_furnace"],
         ).export(ctx)
-
-
