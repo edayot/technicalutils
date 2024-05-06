@@ -29,7 +29,7 @@ class WorldGenerationParams(TypedDict):
 class BlockProperties(TypedDict):
     base_block: str
     all_same_faces: NotRequired[bool]
-    world_generation: NotRequired[WorldGenerationParams]
+    world_generation: NotRequired[list[WorldGenerationParams]]
     
 
 
@@ -159,24 +159,24 @@ class Item:
     def handle_world_generation(self, ctx: Context):
         if not self.block_properties.get("world_generation", None):
             return
-        world_gen = self.block_properties["world_generation"]
-        registry = "technicalutils:impl/load_worldgen"
-        if registry not in ctx.data.functions:
-            ctx.data.functions[registry] = Function()
-        
-        args = Compound()
-        command = ""
-        if "dimension" in world_gen:
-            args["dimension"] = String(world_gen["dimension"])
-        if "biome" in world_gen:
-            args["biome"] = String(world_gen["biome"])
-        if "biome_blacklist" in world_gen:
-            args["biome_blacklist"] = Byte(world_gen["biome_blacklist"])
-        if len(args.keys()) > 0:
-            command = f"data modify storage chunk_scan.ores:registry input set value {serialize_tag(args)}"
+        for i, world_gen in enumerate(self.block_properties["world_generation"]):
+            registry = "technicalutils:impl/load_worldgen"
+            if registry not in ctx.data.functions:
+                ctx.data.functions[registry] = Function()
+            
+            args = Compound()
+            command = ""
+            if "dimension" in world_gen:
+                args["dimension"] = String(world_gen["dimension"])
+            if "biome" in world_gen:
+                args["biome"] = String(world_gen["biome"])
+            if "biome_blacklist" in world_gen:
+                args["biome_blacklist"] = Byte(world_gen["biome_blacklist"])
+            if len(args.keys()) > 0:
+                command = f"data modify storage chunk_scan.ores:registry input set value {serialize_tag(args)}"
 
 
-        ctx.data.functions[registry].append(f"""
+            ctx.data.functions[registry].append(f"""
 scoreboard players set #registry.min_y chunk_scan.ores.data {world_gen["min_y"]}
 scoreboard players set #registry.max_y chunk_scan.ores.data {world_gen["max_y"]}
 scoreboard players set #registry.min_veins chunk_scan.ores.data {world_gen["min_veins"]}
@@ -191,26 +191,26 @@ function chunk_scan.ores:v1/api/register_ore
 
 execute 
     if score #registry.result_id chunk_scan.ores.data matches -1
-    run tellraw @a "Failed to register ore {self.id}"
+    run tellraw @a "Failed to register ore {self.id}_{i}"
 execute
     unless score #registry.result_id chunk_scan.ores.data matches -1
-    run scoreboard players operation #{self.id} {NAMESPACE}.data = #registry.result_id chunk_scan.ores.data
+    run scoreboard players operation #{self.id}_{i} {NAMESPACE}.data = #registry.result_id chunk_scan.ores.data
 
 """)
         
-        place_function_id_block = f"{NAMESPACE}:impl/smithed.custom_block/on_place/{self.id}"
-        place_function_tag_id_call = f"#{NAMESPACE}:calls/chunk_scan.ores/place_ore"
-        place_function_id = f"{NAMESPACE}:impl/chunk_scan.ores/place_ore"
-        chunk_scan_function_tag_id = f"chunk_scan.ores:v1/place_ore"
-        if chunk_scan_function_tag_id not in ctx.data.function_tags:
-            ctx.data.function_tags[chunk_scan_function_tag_id] = FunctionTag()
-        if place_function_id not in ctx.data.functions:
-            ctx.data.functions[place_function_id] = Function("# @public\n\n")
-            ctx.data.function_tags[chunk_scan_function_tag_id].data["values"].append(place_function_tag_id_call)
-        
-        ctx.data.functions[place_function_id].append(f"""
+            place_function_id_block = f"{NAMESPACE}:impl/smithed.custom_block/on_place/{self.id}"
+            place_function_tag_id_call = f"#{NAMESPACE}:calls/chunk_scan.ores/place_ore"
+            place_function_id = f"{NAMESPACE}:impl/chunk_scan.ores/place_ore"
+            chunk_scan_function_tag_id = f"chunk_scan.ores:v1/place_ore"
+            if chunk_scan_function_tag_id not in ctx.data.function_tags:
+                ctx.data.function_tags[chunk_scan_function_tag_id] = FunctionTag()
+            if place_function_id not in ctx.data.functions:
+                ctx.data.functions[place_function_id] = Function("# @public\n\n")
+                ctx.data.function_tags[chunk_scan_function_tag_id].data["values"].append(place_function_tag_id_call)
+            
+            ctx.data.functions[place_function_id].append(f"""
 execute
-    if score #{self.id} {NAMESPACE}.data = #gen.id chunk_scan.ores.data
+    if score #{self.id}_{i} {NAMESPACE}.data = #gen.id chunk_scan.ores.data
     run function {place_function_id_block}
 """)
         

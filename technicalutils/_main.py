@@ -15,18 +15,31 @@ def beet_default(ctx: Context):
             "ore": {
                 "block_properties": {
                     "base_block": "minecraft:lodestone",
-                    "world_generation": {
-                        "min_y": 0,
-                        "max_y": 64,
-                        "min_veins": 30,
-                        "max_veins": 32,
+                    "world_generation": [{
+                        "min_y": 10,
+                        "max_y": 40,
+                        "min_veins": 8,
+                        "max_veins": 10,
                         "min_vein_size": 4,
-                        "max_vein_size": 8,
+                        "max_vein_size": 5,
                         "ignore_restrictions": 0
-                    }
+                    }]
                 }
             },
-            "deepslate_ore": {},
+            "deepslate_ore": {
+                "block_properties": {
+                    "base_block": "minecraft:lodestone",
+                    "world_generation": [{
+                        "min_y": -10,
+                        "max_y": 0,
+                        "min_veins": 1,
+                        "max_veins": 2,
+                        "min_vein_size": 8,
+                        "max_vein_size": 10,
+                        "ignore_restrictions": 0,
+                    }]
+                }
+            },
             "block": {},
             "raw_ore_block": {},
             "ingot": {},
