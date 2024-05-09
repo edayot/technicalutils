@@ -1,14 +1,14 @@
 {
-    "structures": [
+  "structures": [
       {
-        "structure": "technicalutils:new_end_city",
-        "weight": 1
+          "structure": "technicalutils:new_end_city",
+          "weight": 1
       }
-    ],
-    "placement": {
+  ],
+  "placement": {
       "type": "minecraft:random_spread",
-      "spacing": 5,
-      "separation": 2,
-      "salt": 1646207470
-    }
+      "salt": 1237112230,
+      "spacing": 30,
+      "separation": 5
   }
+}
