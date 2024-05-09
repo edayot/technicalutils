@@ -18,10 +18,10 @@ def beet_default(ctx: Context):
                     "world_generation": [{
                         "min_y": 10,
                         "max_y": 40,
-                        "min_veins": 8,
-                        "max_veins": 10,
+                        "min_veins": 1,
+                        "max_veins": 5,
                         "min_vein_size": 4,
-                        "max_vein_size": 5,
+                        "max_vein_size": 15,
                         "ignore_restrictions": 0
                     }]
                 }
@@ -34,8 +34,8 @@ def beet_default(ctx: Context):
                         "max_y": 0,
                         "min_veins": 1,
                         "max_veins": 2,
-                        "min_vein_size": 8,
-                        "max_vein_size": 10,
+                        "min_vein_size": 4,
+                        "max_vein_size": 5,
                         "ignore_restrictions": 0,
                     }]
                 }

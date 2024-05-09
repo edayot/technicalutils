@@ -1,0 +1,33 @@
+{
+    "fallback": "minecraft:empty",
+    "elements": [
+      {
+        "weight": 40,
+        "element": {
+          "element_type": "minecraft:single_pool_element",
+          "location": "technicalutils:new_end_city/stairs/first/stairs_simple",
+          "projection": "rigid",
+          "processors": "minecraft:empty"
+        }
+      },
+      {
+        "weight": 5,
+        "element": {
+          "element_type": "minecraft:single_pool_element",
+          "location": "technicalutils:new_end_city/stairs/first/stairs_jump_glass",
+          "projection": "rigid",
+          "processors": "minecraft:empty"
+        }
+      },
+      {
+        "weight": 5,
+        "element": {
+          "element_type": "minecraft:single_pool_element",
+          "location": "technicalutils:new_end_city/stairs/first/stairs_jump_glass_inverse",
+          "projection": "rigid",
+          "processors": "minecraft:empty"
+        }
+      }
+      
+    ]
+  }

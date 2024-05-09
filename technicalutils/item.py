@@ -128,7 +128,7 @@ class Item:
                     "entries": [
                         {
                             "type": "minecraft:item",
-                            "name": "minecraft:stone",
+                            "name": self.base_item,
                             "functions": [
                                 {
                                     "function": "minecraft:set_components",
@@ -235,6 +235,7 @@ execute
     run function ./on_place/{self.id}:
         setblock ~ ~ ~ {self.block_properties["base_block"]}
         execute 
+            align xyz positioned ~.5 ~.5 ~.5
             summon item_display
             run function ./on_place/{self.id}/place_entity:
                 tag @s add {NAMESPACE}.{self.id}
@@ -270,7 +271,7 @@ kill @s
         if all_same_function_id not in ctx.data.functions:
             ctx.data.functions[all_same_function_id] = Function()
         ctx.data.functions[all_same_function_id].append(
-            f"execute if entity @s[tag={NAMESPACE}.block.{self.block_properties['base_block'].replace('minecraft:', '')}] run function {destroy_function_id}"
+            f"execute if entity @s[tag={NAMESPACE}.{self.id}] run function {destroy_function_id}"
         )
 
     def set_components(self):
@@ -351,7 +352,7 @@ kill @s
                     },
                 }
             )
-        elif self.block_properties.get("all_same_faces", False):
+        elif self.block_properties.get("all_same_faces", True):
             ctx.assets.models[model_path] = Model(
                 {
                     "parent": "minecraft:block/cube_all",

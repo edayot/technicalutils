@@ -59,7 +59,7 @@ DEFAULT_MINERALS_BLOCK_ARGS: dict[str, TypingSubItemBlock] = {
             {Lang.en_us: "%s Ore", Lang.fr_fr: "Minerai de %s"},
         ),
         "custom_model_data_offset": 0,
-        "block_properties": BlockProperties({"base_block":"minecraft:stone"})
+        "block_properties": BlockProperties({"base_block":"minecraft:lodestone"})
     },
     "deepslate_ore": {
         "translation": (
@@ -67,7 +67,7 @@ DEFAULT_MINERALS_BLOCK_ARGS: dict[str, TypingSubItemBlock] = {
             {Lang.en_us: "Deepslate %s Ore", Lang.fr_fr: "Minerai de deepslate de %s"},
         ),
         "custom_model_data_offset": 1,
-        "block_properties": BlockProperties({"base_block":"minecraft:deepslate"})
+        "block_properties": BlockProperties({"base_block":"minecraft:lodestone"})
     },
     "raw_ore_block": {
         "translation": (
@@ -75,7 +75,7 @@ DEFAULT_MINERALS_BLOCK_ARGS: dict[str, TypingSubItemBlock] = {
             {Lang.en_us: "Raw %s Block", Lang.fr_fr: "Bloc brut de %s"},
         ),
         "custom_model_data_offset": 5,
-        "block_properties": BlockProperties({"base_block":"minecraft:stone"})
+        "block_properties": BlockProperties({"base_block":"minecraft:lodestone"})
     },
     "block": {
         "translation": (
@@ -83,7 +83,7 @@ DEFAULT_MINERALS_BLOCK_ARGS: dict[str, TypingSubItemBlock] = {
             {Lang.en_us: "%s Block", Lang.fr_fr: "Bloc de %s"},
         ),
         "custom_model_data_offset": 6,
-        "block_properties": BlockProperties({"base_block":"minecraft:stone"})
+        "block_properties": BlockProperties({"base_block":"minecraft:lodestone"})
     },
 }
 

@@ -9,7 +9,7 @@ readme = "README.md"
 python = "^3.11"
 beet = "^0.105.0"
 mecha = "^0.94.0"
-weld-deps = "^0.6.0"
+weld-deps = "^0.7.0"
 frozendict = "^2.4.2"
 
 [tool.poetry.dev-dependencies]
@@ -48,6 +48,7 @@ upload_to_vcs_release = true
 output = "build"
 
 pipeline = [
+    "beet.contrib.unknown_files",
     "technicalutils",
     "technicalutils.export",
     "technicalutils.versioning",
