@@ -221,9 +221,9 @@ execute
         internal_function_id = f"{NAMESPACE}:impl/smithed.custom_block/on_place"
         if smithed_function_tag_id not in ctx.data.function_tags:
             ctx.data.function_tags[smithed_function_tag_id] = FunctionTag()
-            ctx.data.function_tags[smithed_function_tag_id].data["values"].append(
-                f"#{NAMESPACE}:calls/smithed.custom_block/on_place"
-            )
+        ctx.data.function_tags[smithed_function_tag_id].data["values"].append(
+            f"#{NAMESPACE}:calls/smithed.custom_block/on_place"
+        )
 
         if internal_function_id not in ctx.data.functions:
             ctx.data.functions[internal_function_id] = Function("# @public\n\n")

@@ -7,9 +7,9 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-beet = "^0.105.0"
-mecha = "^0.94.0"
-weld-deps = "^0.7.0"
+beet = {git = "https://github.com/TheNuclearNexus/beet.git", branch = "1.21-changes"}
+mecha = ">=0.94.0"
+weld-deps = ">=0.7.0"
 frozendict = "^2.4.2"
 
 [tool.poetry.dev-dependencies]
@@ -63,14 +63,15 @@ require=[
 [tool.beet.data_pack]
 name = "{{ project_id }}_{{ project_version }}_dp_bundled"
 load = "."
+pack_format = 48
 
 [tool.beet.resource_pack]
 name = "{{ project_id }}_{{ project_version }}_rp_bundled"
 load = "."
 
 [tool.beet.meta]
-mc_supports = ["1.20.5"]
-minecraft_version = "1.20.5"
+mc_supports = ["1.21"]
+minecraft_version = "1.21"
 
 [tool.beet.meta.mecha]
 multiline = true
@@ -84,7 +85,17 @@ include_prerelease=false
 
 [[tool.beet.meta.weld_deps.deps]]
 id = "itemio"
-match = ">=0.14.1"
+match = ">=1.1.0"
+source = "smithed"
+
+[[tool.beet.meta.weld_deps.deps]]
+id = "smithed.custom_block.dev"
+match = ">=0.4.1"
+source = "smithed"
+
+[[tool.beet.meta.weld_deps.deps]]
+id = "smithed.crafter.dev"
+match = ">=0.4.1"
 source = "smithed"
 
 [[tool.beet.meta.weld_deps.deps]]

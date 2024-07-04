@@ -19,9 +19,9 @@ def beet_default(ctx: Context):
                         "min_y": 10,
                         "max_y": 40,
                         "min_veins": 1,
-                        "max_veins": 5,
+                        "max_veins": 3,
                         "min_vein_size": 4,
-                        "max_vein_size": 15,
+                        "max_vein_size": 10,
                         "ignore_restrictions": 0
                     }]
                 }
