@@ -224,7 +224,7 @@ class SubItem(BaseModel):
                         "name": value["name"] if "name" in value else "No name",
                         "operation": value["operation"] if "operation" in value else "add_value",
                         "slot": value["slot"],
-                        "uuid": generate_uuid(),
+                        "id": f"{NAMESPACE}:{key.split('.')[-1]}_{self.translation[0]}",
                     }
                     for key, value in self.additional_attributes.items()
                 ],
@@ -273,16 +273,16 @@ class SubItemArmor(SubItemDamagable):
                 "amount": self.armor,
                 "name": "Armor modifier",
                 "operation": "add_value",
-                "slot": "chest",
-                "uuid": generate_uuid(),
+                "slot": "armor",
+                "id": f"{NAMESPACE}:armor_{self.translation[0]}",
             },
             {
                 "type": "minecraft:generic.armor_toughness",
                 "amount": self.armor_toughness,
                 "name": "Armor toughness modifier",
                 "operation": "add_value",
-                "slot": "chest",
-                "uuid": generate_uuid(),
+                "slot": "armor",
+                "id": f"{NAMESPACE}:armor_toughness_{self.translation[0]}",
             },
         ])
         return res
@@ -317,16 +317,16 @@ class SubItemWeapon(SubItemDamagable):
                             "amount": self.attack_damage,
                             "name": "Tool modifier",
                             "operation": "add_value",
-                            "slot": "armor",
-                            "uuid": generate_uuid(),
+                            "slot": "hand",
+                            "id": f"{NAMESPACE}:attack_damage_{self.translation[0]}",
                         },
                         {
                             "type": "minecraft:generic.attack_speed",
-                            "amount": self.attack_speed,
+                            "amount": self.attack_speed-4,
                             "name": "Tool modifier",
                             "operation": "add_value",
-                            "slot": "armor",
-                            "uuid": generate_uuid(),
+                            "slot": "hand",
+                            "id": f"{NAMESPACE}:attack_speed_{self.translation[0]}",
                         },
                     ]
                 }
@@ -353,7 +353,7 @@ class SubItemTool(SubItemWeapon):
                             "correct_for_drops": False,
                         },
                         {
-                            "blocks": "#minecraft:mineable/pickaxe",
+                            "blocks": f"#minecraft:mineable/{self.type}",
                             "correct_for_drops": True,
                             "speed": self.speed,
                         },
