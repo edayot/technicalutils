@@ -577,7 +577,6 @@ class Mineral:
         if boots := self.get_item("boots"):
             ShapedRecipe(
                 items=[
-                    [None, None, None],
                     [ingot, None, ingot],
                     [ingot, None, ingot],
                 ],

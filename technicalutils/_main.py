@@ -1,7 +1,8 @@
 from beet import Context
 from .types import NAMESPACE, Lang
 from .mineral import Mineral
-from .item import Item
+from .item import Item, Registry
+from .crafting import VanillaItem, ShapedRecipe
 
 
 def beet_default(ctx: Context):
@@ -127,7 +128,7 @@ def beet_default(ctx: Context):
                 }
             },
         },
-    )
+    ).export(ctx)
     item_cable = Item(
         id="item_cable",
         item_name=(
@@ -143,3 +144,15 @@ def beet_default(ctx: Context):
             'smart_waterlog': True,
         }
     )
+    silver_ingot = Registry.get("silver_ingot")
+    redstone = VanillaItem("minecraft:redstone")
+
+    ShapedRecipe(
+        [
+            [silver_ingot, silver_ingot, silver_ingot],
+            [silver_ingot, redstone, silver_ingot],
+            [silver_ingot, silver_ingot, silver_ingot],
+        ],
+        (item_cable, 16)
+    ).export(ctx)
+
