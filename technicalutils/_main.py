@@ -1,6 +1,7 @@
 from beet import Context
 from .types import NAMESPACE, Lang
 from .mineral import Mineral
+from .item import Item
 
 
 def beet_default(ctx: Context):
@@ -10,7 +11,7 @@ def beet_default(ctx: Context):
             f"{NAMESPACE}.mineral.silver",
             {Lang.en_us: "Silver", Lang.fr_fr: "Argent"},
         ),
-        custom_model_data=1430000,
+        custom_model_data=1431000,
         items={
             "ore": {
                 "block_properties": {
@@ -126,4 +127,19 @@ def beet_default(ctx: Context):
                 }
             },
         },
+    )
+    item_cable = Item(
+        id="item_cable",
+        item_name=(
+            f"{NAMESPACE}.item.item_cable",
+            {Lang.en_us: "Item Cable", Lang.fr_fr: "Câble d'objet"},
+        ),
+        custom_model_data=1432001,
+        custom_model_data_placed=1430000,
+        base_item="minecraft:furnace",
+        base_item_placed="minecraft:structure_void",
+        block_properties={
+            'base_block': 'minecraft:conduit',
+            'smart_waterlog': True,
+        }
     )

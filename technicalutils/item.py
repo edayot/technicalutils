@@ -28,6 +28,7 @@ class WorldGenerationParams(TypedDict):
 
 class BlockProperties(TypedDict):
     base_block: str
+    smart_waterlog: NotRequired[bool]
     all_same_faces: NotRequired[bool]
     world_generation: NotRequired[list[WorldGenerationParams]]
     
@@ -42,8 +43,10 @@ class Item:
 
     components_extra: dict[str, Any] = field(default_factory=dict)
 
-    base_item: str = "minecraft:jigsay"
+    base_item: str = "minecraft:jigsaw"
+    base_item_placed: str = None
     custom_model_data: int = 1430000
+    custom_model_data_placed: int = None
 
     block_properties: BlockProperties = None
     is_cookable: bool = False
@@ -227,37 +230,43 @@ execute
 
         if internal_function_id not in ctx.data.functions:
             ctx.data.functions[internal_function_id] = Function("# @public\n\n")
+        
+        placement_code = f"setblock ~ ~ ~ {self.block_properties['base_block']}"
+        if self.block_properties.get("smart_waterlog", False):
+            placement_code = f"setblock ~ ~ ~ {self.block_properties['base_block']}[waterlogged=false]"
 
         ctx.data.functions[internal_function_id].append(
             f"""
 execute
     if data storage smithed.custom_block:main {{blockApi:{{id:"{NAMESPACE}:{self.id}"}}}}
     run function ./on_place/{self.id}:
-        setblock ~ ~ ~ {self.block_properties["base_block"]}
+        {placement_code}
         execute 
             align xyz positioned ~.5 ~.5 ~.5
             summon item_display
-            run function ./on_place/{self.id}/place_entity:
-                tag @s add {NAMESPACE}.{self.id}
-                tag @s add {NAMESPACE}.block
-                tag @s add {NAMESPACE}.block.{self.block_properties["base_block"].replace("minecraft:", "")}
-                tag @s add smithed.block
-                tag @s add smithed.strict
-                tag @s add smithed.entity
+            run function ./on_place/{self.id}/place_entity
 
-                data modify entity @s item set value {{id:"{self.base_item}",count:1,components:{{"minecraft:custom_model_data":{self.custom_model_data}}}}}
+prepend function ./on_place/{self.id}/place_entity:
+    tag @s add {NAMESPACE}.{self.id}
+    tag @s add {NAMESPACE}.block
+    tag @s add {NAMESPACE}.block.{self.block_properties["base_block"].replace("minecraft:", "")}
+    tag @s add smithed.block
+    tag @s add smithed.strict
+    tag @s add smithed.entity
 
-                data merge entity @s {{transformation:{{scale:[1.001f,1.001f,1.001f]}}}}
-                data merge entity @s {{brightness:{{sky:10,block:15}}}}
+    data modify entity @s item set value {{id:"{self.base_item_placed or self.base_item}",count:1,components:{{"minecraft:custom_model_data":{self.custom_model_data_placed or self.custom_model_data}}}}}
+
+    data merge entity @s {{transformation:{{scale:[1.001f,1.001f,1.001f]}}}}
+    data merge entity @s {{brightness:{{sky:10,block:15}}}}
 """
         )
     
     def create_custom_block_destroy(self, ctx: Context):
         loot_table_name = f"{NAMESPACE}:items/{self.id}"
         destroy_function_id = f"{NAMESPACE}:impl/blocks/destroy/{self.id}"
-        ctx.data.functions[destroy_function_id] = Function(
-            f"""
-
+        if destroy_function_id not in ctx.data.functions:
+            ctx.data.functions[destroy_function_id] = Function()
+        ctx.data.functions[destroy_function_id].prepend(f"""
 execute
     as @e[type=item,nbt={{Item:{{id:"{self.block_properties["base_block"]}",count:1}}}},limit=1,sort=nearest,distance=..3]
     run function ~/spawn_item:
@@ -265,8 +274,8 @@ execute
         kill @s
 
 kill @s
-"""
-        )
+
+""")
         all_same_function_id = f"{NAMESPACE}:impl/blocks/destroy_{self.block_properties['base_block'].replace('minecraft:', '')}"
         if all_same_function_id not in ctx.data.functions:
             ctx.data.functions[all_same_function_id] = Function()
@@ -304,7 +313,7 @@ kill @s
                                         "function": "minecraft:set_name",
                                         "entity": "this",
                                         "target": "item_name",
-                                        "name": self.item_name,
+                                        "name": self.item_name if not isinstance(self.item_name, tuple) else self.get_item_name(),
                                     },
                                     {
                                         "function": "minecraft:set_lore",
@@ -322,12 +331,17 @@ kill @s
             }
         )
 
+    def get_item_name(self):
+        return {
+            "translate": self.item_name[0],
+        }
+
     def create_assets(self, ctx: Context):
         key = f"minecraft:item/{self.base_item.split(':')[1]}"
         if not key in ctx.assets.models:
             vanilla = ctx.inject(Vanilla).releases[ctx.meta["minecraft_version"]]
             # get the default model for this item
-            ctx.assets.models[key] = vanilla.assets.models[key]
+            ctx.assets.models[key] = Model(vanilla.assets.models[key].data.copy())
             ctx.assets.models[key].data["overrides"] = []
 
         # add the custom model data to the model
@@ -338,6 +352,8 @@ kill @s
             }
         )
         # create the custom model
+        if model_path in ctx.assets.models:
+            return
         if not self.block_properties and not self.is_armor:
             ctx.assets.models[model_path] = Model(
                 {"parent": "item/generated", "textures": {"layer0": model_path}}
