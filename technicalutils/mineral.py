@@ -7,7 +7,7 @@ from frozendict import frozendict
 from .utils import export_translated_string, generate_uuid
 from .types import Lang, TranslatedString, NAMESPACE
 from .item import Item, BlockProperties, Registry
-from .crafting import ShapedRecipe, ShapelessRecipe, NBTSmelting, VanillaItem
+from .crafting import ShapedRecipe, ShapelessRecipe, NBTSmelting, VanillaItem, SimpledrawerMaterial
 
 from pydantic import BaseModel
 
@@ -435,6 +435,22 @@ class Mineral:
         ore = self.get_item("ore")
         deepslate_ore = self.get_item("deepslate_ore")
         dust = self.get_item("dust")
+
+        SimpledrawerMaterial(
+            block=block,
+            ingot=ingot,
+            nugget=nugget,
+            material_id=f'{NAMESPACE}.{self.id}',
+            material_name=f'{json.dumps({"translate": self.name[0]})}',
+        ).export(ctx)
+
+        SimpledrawerMaterial(
+            block=raw_ore_block,
+            ingot=raw_ore,
+            nugget=None,
+            material_id=f'{NAMESPACE}.{self.id}_raw',
+            material_name=f'{json.dumps({"translate": self.name[0]})}',
+        ).export(ctx)
 
         ShapedRecipe(
             items=[

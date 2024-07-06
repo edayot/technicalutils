@@ -56,10 +56,15 @@ class Item:
         assert self.id not in Registry, f"Item {self.id} already exists"
         Registry[self.id] = self
 
-    def result_command(self, count: int) -> str:
+    def result_command(self, count: int, type : str = "block", slot : int = 16) -> str:
         loot_table_name = f"{NAMESPACE}:items/{self.id}"
         if count == 1:
-            return f"loot replace block ~ ~ ~ container.16 loot {loot_table_name}"
+            if type == "block":
+                return f"loot replace block ~ ~ ~ container.{slot} loot {loot_table_name}"
+            elif type == "entity":
+                return f"loot replace entity @s container.{slot} loot {loot_table_name}"
+            else:
+                raise ValueError(f"Invalid type {type}")
         loot_table_inline = {
             "pools": [
                 {
@@ -76,8 +81,12 @@ class Item:
                 }
             ]
         }
-
-        return f"loot replace block ~ ~ ~ container.16 loot {json.dumps(loot_table_inline)}"
+        if type == "block":
+            return f"loot replace block ~ ~ ~ container.{slot} loot {json.dumps(loot_table_inline)}"
+        elif type == "entity":
+            return f"loot replace entity @s container.{slot} loot {json.dumps(loot_table_inline)}"
+        else:
+            raise ValueError(f"Invalid type {type}")
 
     def to_nbt(self, i: int) -> Compound:
         # return the nbt tag of the item smithed id "SelectedItem.components."minecraft:custom_data".smithed.id"

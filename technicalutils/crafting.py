@@ -25,8 +25,13 @@ class VanillaItem:
     def to_nbt(self, i: int):
         return Compound({"id": String(self.id), "Slot": Byte(i)})
 
-    def result_command(self, count: int) -> str:
-        return f"item replace block ~ ~ ~ container.16 with {self.id} {count} "
+    def result_command(self, count: int, type : str = "block", slot : int = 16) -> str:
+        if type == "block":
+            return f"item replace block ~ ~ ~ container.{slot} with {self.id} {count} "
+        elif type == "entity":
+            return f"item replace entity @s container.{slot} with {self.id} {count} "
+        else:
+            raise ValueError(f"Invalid type {type}")
 
 
 @dataclass
@@ -185,3 +190,111 @@ execute
                     },
                 }
             )
+
+
+@dataclass
+class SimpledrawerMaterial:
+    block: Item | VanillaItem
+    ingot: Item | VanillaItem
+    nugget: Item | VanillaItem | None
+
+    material_id: str 
+    material_name: str
+
+    ingot_in_block: int = 9
+    nugget_in_ingot: int = 9
+
+    def generate_test(self, nbt: Compound, type: str):
+        match type:
+            case "block":
+                type_id = 0
+            case "ingot":
+                type_id = 1
+            case "nugget":
+                type_id = 2
+            case _:
+                raise ValueError(f"Invalid type {type}")
+        
+        return f"""
+execute
+    unless score #success_material simpledrawer.io matches 1
+    if data storage simpledrawer:io item_material{serialize_tag(nbt)}
+    run function ~/{self.material_id}/{type}:
+        scoreboard players set #type simpledrawer.io {type_id}
+        function ~/..
+"""
+
+    def export(self, ctx: Context):
+        """
+        This function export the simple drawer materials to the ctx variable.
+        """
+        simpledrawer_tag = "simpledrawer:material"
+        function_tag_impl = f"{NAMESPACE}:simpledrawer/material"
+        function_path = f"{NAMESPACE}:impl/simpledrawer/material"
+        function_path_calls = f"{NAMESPACE}:impl/calls/simpledrawer/material"
+        if simpledrawer_tag not in ctx.data.function_tags:
+            ctx.data.function_tags[simpledrawer_tag] = FunctionTag()
+        if not function_path in ctx.data.functions:
+            ctx.data.functions[function_path] = Function("# @public\n\n")
+            ctx.data.function_tags[simpledrawer_tag].data["values"].append(f"#{function_tag_impl}")
+        if not function_tag_impl in ctx.data.function_tags:
+            ctx.data.function_tags[function_tag_impl] = FunctionTag()
+            ctx.data.function_tags[function_tag_impl].data["values"].append(function_path_calls)
+        
+        block_nbt = self.block.to_nbt(0)
+        del block_nbt["Slot"]
+        ingot_nbt = self.ingot.to_nbt(0)
+        del ingot_nbt["Slot"]
+        nugget_nbt = self.nugget.to_nbt(0) if self.nugget is not None else None
+        if nugget_nbt is not None:
+            del nugget_nbt["Slot"]
+
+        block_command = self.generate_test(block_nbt, "block")
+        ingot_command = self.generate_test(ingot_nbt, "ingot")
+        nugget_command = self.generate_test(nugget_nbt, "nugget") if nugget_nbt is not None else ""
+
+        if self.nugget is not None:
+            nugget_nbt_command = f"""
+    execute
+        summon item_display 
+        run function ~/get_nugget_nbt:
+            {self.nugget.result_command(1, "entity", 0)}
+            data modify storage simpledrawer:io material.nugget.item set from entity @s item
+            kill @s
+"""
+        else:
+            nugget_nbt_command = ""
+
+        commands = f"""
+{block_command}
+{ingot_command}
+{nugget_command}
+
+function ~/{self.material_id}:
+    scoreboard players set #success_material simpledrawer.io 1
+
+    scoreboard players set #ingot_in_block simpledrawer.io {self.ingot_in_block}
+    scoreboard players set #nugget_in_ingot simpledrawer.io {self.nugget_in_ingot}
+
+    data modify storage simpledrawer:io material.material set value {self.material_id}
+    data modify storage simpledrawer:io material.material_name set value {self.material_name}
+
+    execute 
+        summon item_display 
+        run function ~/get_block_nbt:
+            {self.block.result_command(1, "entity", 0)}
+            data modify storage simpledrawer:io material.block.item set from entity @s item
+            kill @s
+    execute
+        summon item_display 
+        run function ~/get_ingot_nbt:
+            {self.ingot.result_command(1, "entity", 0)}
+            data modify storage simpledrawer:io material.ingot.item set from entity @s item
+            kill @s
+{nugget_nbt_command}
+    
+
+"""
+
+        ctx.data.functions[function_path].append(commands)
+        

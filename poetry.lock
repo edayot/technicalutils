@@ -97,6 +97,21 @@ jupyter = ["ipython (>=7.8.0)", "tokenize-rt (>=3.2.0)"]
 uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
+name = "bolt"
+version = "0.48.0"
+description = "Supercharge Minecraft commands with Python"
+optional = false
+python-versions = "<4.0,>=3.10"
+files = [
+    {file = "bolt-0.48.0-py3-none-any.whl", hash = "sha256:7fd79b531837a9cc83a477dbfe851c4116686df542e51b2fcc07672a38739aa9"},
+    {file = "bolt-0.48.0.tar.gz", hash = "sha256:62e56ca90a39d88ed902a0377fff303abaedfdeb8a8e1b45d7353c3396438b48"},
+]
+
+[package.dependencies]
+beet = ">=0.105.0"
+mecha = ">=0.94.0"
+
+[[package]]
 name = "certifi"
 version = "2024.7.4"
 description = "Python package for providing Mozilla's CA Bundle."
@@ -1063,4 +1078,4 @@ smithed = ">=0.16.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "d1c13eda6e291f9ae5fc73f35d1780f30d0a7f16aeaf9f07604871959ea76fe2"
+content-hash = "4610243ead371288d0dc50a8be8025a365b20e7a88af7976bc42e5d758d281b8"
