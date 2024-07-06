@@ -68,6 +68,11 @@
 		{ "predicate": { "custom_model_data": 1430060 }, "model": "technicalutils:item_cable/wire_nsew" },
 		{ "predicate": { "custom_model_data": 1430061 }, "model": "technicalutils:item_cable/wire_dnsew" },
 		{ "predicate": { "custom_model_data": 1430062 }, "model": "technicalutils:item_cable/wire_unsew" },
-		{ "predicate": { "custom_model_data": 1430063 }, "model": "technicalutils:item_cable/wire_udnsew" }
+		{ "predicate": { "custom_model_data": 1430063 }, "model": "technicalutils:item_cable/wire_udnsew" },
+
+		{"predicate": {"custom_model_data": 1432002},"model": "technicalutils:servo/extract"},
+		{"predicate": {"custom_model_data": 1432003},"model": "technicalutils:servo/extract_connected"},
+    	{"predicate": {"custom_model_data": 1432004},"model": "technicalutils:servo/insert"},
+    	{"predicate": {"custom_model_data": 1432005},"model": "technicalutils:servo/insert_connected"}
 
 	]}

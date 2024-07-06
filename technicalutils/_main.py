@@ -164,7 +164,7 @@ def beet_default(ctx: Context):
             f"{NAMESPACE}.item.servo_extract",
             {Lang.en_us: "Servo Extract", Lang.fr_fr: "Servo Extracteur"},
         ),
-        custom_model_data=1432001,
+        custom_model_data=1432002,
         base_item="minecraft:item_frame",
         components_extra={
             "minecraft:entity_data": {
@@ -180,7 +180,7 @@ def beet_default(ctx: Context):
             f"{NAMESPACE}.item.servo_insert",
             {Lang.en_us: "Servo Insert", Lang.fr_fr: "Servo Inserteur"},
         ),
-        custom_model_data=1432001,
+        custom_model_data=1432004,
         base_item="minecraft:item_frame",
         components_extra={
             "minecraft:entity_data": {

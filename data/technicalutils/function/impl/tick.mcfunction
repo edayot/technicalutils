@@ -17,8 +17,8 @@ execute
 execute 
     as @e[type=item_frame,tag=technicalutils.servo] 
     unless data entity @s Item.count 
-    run kill @s
+    run function technicalutils:impl/servo/destroy
 
-
+execute as @e[type=item] if items entity @s container.0 *[minecraft:custom_data~{technicalutils:{servo:{}}}] run function technicalutils:impl/servo/destroy_item
 
 schedule function technicalutils:impl/tick 2t replace
