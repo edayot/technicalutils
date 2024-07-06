@@ -158,3 +158,35 @@ def beet_default(ctx: Context):
         (item_cable, 16)
     ).export(ctx)
 
+    servo_extract = Item(
+        id="servo_extract",
+        item_name=(
+            f"{NAMESPACE}.item.servo_extract",
+            {Lang.en_us: "Servo Extract", Lang.fr_fr: "Servo Extracteur"},
+        ),
+        custom_model_data=1432001,
+        base_item="minecraft:item_frame",
+        components_extra={
+            "minecraft:entity_data": {
+                "id": "minecraft:item_frame",
+                "Tags": [f"{NAMESPACE}.servo.summoned", f"{NAMESPACE}.servo.extract"],
+            }
+        }
+    )
+
+    servo_insert = Item(
+        id="servo_insert",
+        item_name=(
+            f"{NAMESPACE}.item.servo_insert",
+            {Lang.en_us: "Servo Insert", Lang.fr_fr: "Servo Inserteur"},
+        ),
+        custom_model_data=1432001,
+        base_item="minecraft:item_frame",
+        components_extra={
+            "minecraft:entity_data": {
+                "id": "minecraft:item_frame",
+                "Tags": [f"{NAMESPACE}.servo.summoned", f"{NAMESPACE}.servo.insert"],
+            }
+        }
+    )
+

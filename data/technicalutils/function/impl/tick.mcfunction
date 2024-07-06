@@ -10,4 +10,15 @@ execute
     at @s
     run function ./blocks/destroy_conduit
 
+
+execute 
+    as @e[type=item_frame,tag=technicalutils.servo.summoned]
+    at @s run function technicalutils:impl/servo/place_entity
+execute 
+    as @e[type=item_frame,tag=technicalutils.servo] 
+    unless data entity @s Item.count 
+    run kill @s
+
+
+
 schedule function technicalutils:impl/tick 2t replace
