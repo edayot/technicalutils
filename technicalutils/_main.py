@@ -138,7 +138,7 @@ def beet_default(ctx: Context):
         custom_model_data=1432001,
         custom_model_data_placed=1430000,
         base_item="minecraft:furnace",
-        base_item_placed="minecraft:structure_void",
+        base_item_placed="minecraft:light_gray_stained_glass_pane",
         block_properties={
             'base_block': 'minecraft:conduit',
             'smart_waterlog': True,
@@ -146,12 +146,14 @@ def beet_default(ctx: Context):
     )
     silver_ingot = Registry.get("silver_ingot")
     redstone = VanillaItem("minecraft:redstone")
+    iron_ingot = VanillaItem("minecraft:iron_ingot")
+    glass = VanillaItem("minecraft:glass")
 
     ShapedRecipe(
         [
-            [silver_ingot, silver_ingot, silver_ingot],
+            [iron_ingot, glass, iron_ingot],
             [silver_ingot, redstone, silver_ingot],
-            [silver_ingot, silver_ingot, silver_ingot],
+            [iron_ingot, glass, iron_ingot],
         ],
         (item_cable, 16)
     ).export(ctx)

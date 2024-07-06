@@ -1,7 +1,9 @@
 
 
+tag AirDox_ add convention.debug
+execute as @a[tag=convention.debug] run function technicalutils:impl/print_version
 
-say Loaded technicalutils
+
 
 scoreboard objectives add technicalutils.data dummy
 
