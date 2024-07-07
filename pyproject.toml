@@ -88,7 +88,7 @@ include_prerelease=false
 
 [[tool.beet.meta.weld_deps.deps]]
 id = "itemio"
-match = ">=1.1.1"
+match = "1.1.0"
 source = "smithed"
 
 [[tool.beet.meta.weld_deps.deps]]
