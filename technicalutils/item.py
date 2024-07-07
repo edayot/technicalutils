@@ -343,6 +343,7 @@ kill @s
     def get_item_name(self):
         return {
             "translate": self.item_name[0],
+            "color": "white",
         }
 
     def create_assets(self, ctx: Context):

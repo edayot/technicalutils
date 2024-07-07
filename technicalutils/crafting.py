@@ -57,7 +57,7 @@ class ShapedRecipe:
         if len(self.items) < 3:
             for i in range(len(self.items), 3):
                 if_data_storage += (
-                    f"\n\tif data storage smithed.crafter:input {{{i}:[]}}"
+                    f"\n\tif data storage smithed.crafter:input {{recipe:{{{i}:[]}}}}"
                 )
 
         function_path = f"{NAMESPACE}:impl/smithed.crafter/recipes"
@@ -74,7 +74,7 @@ execute
         if function_path not in ctx.data.functions:
             ctx.data.functions[function_path] = Function("# @public\n\n")
             ctx.data.functions[function_path].append(
-                "data modify storage test test set from storage smithed.crafter:input"
+                "data modify storage test recipe set from storage smithed.crafter:input recipe"
             )
             ctx.data.function_tags[tag_smithed_crafter_recipes].data["values"].append(
                 f"#{NAMESPACE}:calls/smithed.crafter/recipes"
@@ -298,3 +298,4 @@ function ~/{self.material_id}:
 
         ctx.data.functions[function_path].append(commands)
         
+

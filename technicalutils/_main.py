@@ -2,8 +2,9 @@ from beet import Context
 from .types import NAMESPACE, Lang
 from .mineral import Mineral
 from .item import Item, Registry
-from .crafting import VanillaItem, ShapedRecipe
-
+from .crafting import VanillaItem, ShapedRecipe, SimpledrawerMaterial
+from .utils import export_translated_string
+import json
 
 def beet_default(ctx: Context):
     Mineral(
@@ -148,6 +149,8 @@ def beet_default(ctx: Context):
     redstone = VanillaItem("minecraft:redstone")
     iron_ingot = VanillaItem("minecraft:iron_ingot")
     glass = VanillaItem("minecraft:glass")
+    redstone_block = VanillaItem("minecraft:redstone_block")
+    comparator = VanillaItem("minecraft:comparator")
 
     ShapedRecipe(
         [
@@ -188,5 +191,44 @@ def beet_default(ctx: Context):
                 "Tags": [f"{NAMESPACE}.servo.summoned", f"{NAMESPACE}.servo.insert"],
             }
         }
+    )
+    ShapedRecipe(
+        [
+            [None, redstone_block, None],
+            [silver_ingot, comparator, silver_ingot],
+        ],
+        (servo_extract, 1)
+    ).export(ctx)
+    ShapedRecipe(
+        [
+            [silver_ingot, comparator, silver_ingot],
+            [None, redstone_block, None],
+        ],
+        (servo_insert, 1)
+    ).export(ctx)
+
+    servo = (
+        f"{NAMESPACE}.servo",
+        {Lang.en_us: "Servo", Lang.fr_fr: "Servo"},
+    )
+    export_translated_string(ctx, servo)
+    SimpledrawerMaterial(
+        block=servo_extract,
+        ingot=servo_insert,
+        nugget=None,
+        material_id=f"{NAMESPACE}.servo",
+        material_name=f'{json.dumps({"translate": servo[0],})}',
+        ingot_in_block=1,
+        nugget_in_ingot=1,
+    ).export(ctx)
+
+
+    wrench = Item(
+        id="wrench",
+        item_name=(
+            f"{NAMESPACE}.item.wrench",
+            {Lang.en_us: "Wrench", Lang.fr_fr: "Clé à molette"},
+        ),
+        custom_model_data=1432006,
     )
 

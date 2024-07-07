@@ -19,5 +19,10 @@ execute
     unless data entity @s Item.count 
     run function technicalutils:impl/servo/destroy
 
+execute
+    as @e[tag=technicalutils.servo]
+    unless data entity @s {ItemRotation:0b}
+    run function technicalutils:impl/servo/flip
+
 
 schedule function technicalutils:impl/tick 2t replace
