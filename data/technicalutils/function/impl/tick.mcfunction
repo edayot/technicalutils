@@ -10,6 +10,11 @@ execute
     at @s
     run function ./blocks/destroy_conduit
 
+execute 
+    as @e[tag=technicalutils.block.conduit,predicate=!technicalutils:block/underwater_conduit] 
+    at @s
+    run function ./blocks/underwater_conduit
+
 
 execute 
     as @e[type=item_frame,tag=technicalutils.servo.summoned]
