@@ -254,6 +254,7 @@ prepend function ./on_place/{self.id}/place_entity:
         if destroy_function_id not in ctx.data.functions:
             ctx.data.functions[destroy_function_id] = Function()
         ctx.data.functions[destroy_function_id].prepend(f"""
+setblock ~ ~ ~ air destroy
 execute
     as @e[type=item,nbt={{Item:{{id:"{self.block_properties["base_block"]}",count:1}}}},limit=1,sort=nearest,distance=..3]
     run function ~/spawn_item:

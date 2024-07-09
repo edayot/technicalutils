@@ -1,9 +1,11 @@
 {
-    "condition": "minecraft:location_check",
-    "predicate": {
-        "block": {
-            "blocks": "minecraft:conduit"
-        }
-    }
+	"condition": "minecraft:location_check",
+	"predicate": {
+		"block": {
+			"blocks": "minecraft:conduit",
+			"state": {
+				"waterlogged": "false"
+			}
+		}
+	}
 }
-
