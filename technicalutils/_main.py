@@ -137,12 +137,12 @@ def beet_default(ctx: Context):
             {Lang.en_us: "Item Cable", Lang.fr_fr: "Câble d'objet"},
         ),
         custom_model_data=1432001,
-        custom_model_data_placed=1430000,
-        base_item="minecraft:furnace",
-        base_item_placed="minecraft:light_gray_stained_glass_pane",
+        base_item="minecraft:conduit",
         block_properties={
             'base_block': 'minecraft:conduit',
             'smart_waterlog': True,
+            'base_item_placed': 'minecraft:light_gray_stained_glass_pane',
+            'custom_model_data_placed': 1430000,
         }
     )
     silver_ingot = Registry.get("silver_ingot")

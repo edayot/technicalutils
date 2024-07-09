@@ -48,9 +48,9 @@ image = ["Pillow"]
 
 [package.source]
 type = "git"
-url = "https://github.com/TheNuclearNexus/beet.git"
-reference = "1.21-changes"
-resolved_reference = "e22a5156ac6d842c7197baa1445a02a6f30b7243"
+url = "https://github.com/edayot/beet.git"
+reference = "1.21-fixes_from_TheNuclearNexus_branch"
+resolved_reference = "0b07d7a192854af42b7e358a9490a896910afb0a"
 
 [[package]]
 name = "black"
@@ -1078,4 +1078,4 @@ smithed = ">=0.16.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "4610243ead371288d0dc50a8be8025a365b20e7a88af7976bc42e5d758d281b8"
+content-hash = "9749f1c4c6c15b3ce365cac10e0a9763a84b81aecfb7d1dad6194dceef2fac5f"

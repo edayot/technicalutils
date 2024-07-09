@@ -31,6 +31,9 @@ class BlockProperties(TypedDict):
     smart_waterlog: NotRequired[bool]
     all_same_faces: NotRequired[bool]
     world_generation: NotRequired[list[WorldGenerationParams]]
+
+    base_item_placed: NotRequired[str]
+    custom_model_data_placed: NotRequired[int]
     
 
 
@@ -44,9 +47,7 @@ class Item:
     components_extra: dict[str, Any] = field(default_factory=dict)
 
     base_item: str = "minecraft:jigsaw"
-    base_item_placed: str = None
     custom_model_data: int = 1430000
-    custom_model_data_placed: int = None
 
     block_properties: BlockProperties = None
     is_cookable: bool = False
@@ -129,37 +130,9 @@ class Item:
         }
         if self.is_cookable:
             res["nbt_smelting"] = Byte(1)
-        return res
-
-    def create_block_placement_data(self):
         if self.block_properties:
-            return [
-                {
-                    "function": "minecraft:set_contents",
-                    "component": "minecraft:container",
-                    "entries": [
-                        {
-                            "type": "minecraft:item",
-                            "name": self.base_item,
-                            "functions": [
-                                {
-                                    "function": "minecraft:set_components",
-                                    "components": {
-                                        "minecraft:custom_data": {
-                                            "smithed": {
-                                                "block": {
-                                                    "id": f"{NAMESPACE}:{self.id}"
-                                                }
-                                            }
-                                        }
-                                    },
-                                }
-                            ],
-                        }
-                    ],
-                }
-            ]
-        return []
+            res["smithed"]["block"] = {"id": f"{NAMESPACE}:{self.id}"}
+        return res
 
     def create_custom_block(self, ctx: Context):
         if not self.block_properties:
@@ -210,7 +183,7 @@ execute
 
 """)
         
-            place_function_id_block = f"{NAMESPACE}:impl/smithed.custom_block/on_place/{self.id}"
+            place_function_id_block = f"{NAMESPACE}:impl/custom_block_ext/on_place/{self.id}"
             place_function_tag_id_call = f"#{NAMESPACE}:calls/chunk_scan.ores/place_ore"
             place_function_id = f"{NAMESPACE}:impl/chunk_scan.ores/place_ore"
             chunk_scan_function_tag_id = f"chunk_scan.ores:v1/place_ore"
@@ -229,12 +202,12 @@ execute
 
     
     def create_custom_block_placement(self, ctx: Context):
-        smithed_function_tag_id = f"smithed.custom_block:event/on_place"
-        internal_function_id = f"{NAMESPACE}:impl/smithed.custom_block/on_place"
+        smithed_function_tag_id = f"custom_block_ext:event/on_place"
+        internal_function_id = f"{NAMESPACE}:impl/custom_block_ext/on_place"
         if smithed_function_tag_id not in ctx.data.function_tags:
             ctx.data.function_tags[smithed_function_tag_id] = FunctionTag()
         ctx.data.function_tags[smithed_function_tag_id].data["values"].append(
-            f"#{NAMESPACE}:calls/smithed.custom_block/on_place"
+            f"#{NAMESPACE}:calls/custom_block_ext/on_place"
         )
 
         if internal_function_id not in ctx.data.functions:
@@ -247,8 +220,9 @@ execute
         ctx.data.functions[internal_function_id].append(
             f"""
 execute
-    if data storage smithed.custom_block:main {{blockApi:{{id:"{NAMESPACE}:{self.id}"}}}}
+    if data storage custom_block_ext:main {{blockApi:{{id:"{NAMESPACE}:{self.id}"}}}}
     run function ./on_place/{self.id}:
+        setblock ~ ~ ~ air
         {placement_code}
         execute 
             align xyz positioned ~.5 ~.5 ~.5
@@ -263,7 +237,7 @@ prepend function ./on_place/{self.id}/place_entity:
     tag @s add smithed.strict
     tag @s add smithed.entity
 
-    data modify entity @s item set value {{id:"{self.base_item_placed or self.base_item}",count:1,components:{{"minecraft:custom_model_data":{self.custom_model_data_placed or self.custom_model_data}}}}}
+    data modify entity @s item set value {{id:"{self.block_properties.get("base_item_placed") or self.base_item}",count:1,components:{{"minecraft:custom_model_data":{self.block_properties.get("custom_model_data_placed") or self.custom_model_data}}}}}
 
     data merge entity @s {{transformation:{{scale:[1.001f,1.001f,1.001f]}}}}
     data merge entity @s {{brightness:{{sky:10,block:15}}}}
@@ -331,7 +305,6 @@ kill @s
                                         "mode": "replace_all",
                                     },
                                     *self.set_components(),
-                                    *self.create_block_placement_data(),
                                 ],
                             }
                         ],

@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-beet = {git = "https://github.com/TheNuclearNexus/beet.git", branch = "1.21-changes"}
+beet = {git = "https://github.com/edayot/beet.git", branch = "1.21-fixes_from_TheNuclearNexus_branch"}
 mecha = ">=0.94.0"
 weld-deps = ">=0.7.0"
 frozendict = "^2.4.2"
@@ -89,11 +89,6 @@ include_prerelease=false
 [[tool.beet.meta.weld_deps.deps]]
 id = "itemio"
 match = "1.1.0"
-source = "smithed"
-
-[[tool.beet.meta.weld_deps.deps]]
-id = "smithed.custom_block.dev"
-match = ">=0.4.1"
 source = "smithed"
 
 [[tool.beet.meta.weld_deps.deps]]
