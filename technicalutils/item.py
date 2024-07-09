@@ -237,7 +237,11 @@ prepend function ./on_place/{self.id}/place_entity:
     tag @s add smithed.strict
     tag @s add smithed.entity
 
-    data modify entity @s item set value {{id:"{self.block_properties.get("base_item_placed") or self.base_item}",count:1,components:{{"minecraft:custom_model_data":{self.block_properties.get("custom_model_data_placed") or self.custom_model_data}}}}}
+    data modify entity @s item set value {{
+        id:"{self.block_properties.get("base_item_placed") or self.base_item}",
+        count:1,
+        components:{{"minecraft:custom_model_data":{self.block_properties.get("custom_model_data_placed") or self.custom_model_data}}}
+    }}
 
     data merge entity @s {{transformation:{{scale:[1.001f,1.001f,1.001f]}}}}
     data merge entity @s {{brightness:{{sky:10,block:15}}}}
