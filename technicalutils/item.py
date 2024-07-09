@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from .types import TextComponent, TextComponent_base, NAMESPACE
+from .types import TextComponent, TextComponent_base, NAMESPACE, TranslatedString
 from beet import Context, FunctionTag, Function, LootTable, Model
 from typing import Any
 from typing_extensions import TypedDict, NotRequired, Literal
@@ -41,7 +41,7 @@ class BlockProperties(TypedDict):
 class Item:
     id: str
     # the translation key, the
-    item_name: TextComponent
+    item_name: TextComponent | TranslatedString
     lore: list[TextComponent_base] = field(default_factory=list)
 
     components_extra: dict[str, Any] = field(default_factory=dict)
@@ -66,6 +66,17 @@ class Item:
     @property
     def model_path(self):
         return f"{NAMESPACE}:item/{self.id}"
+    
+    @property
+    def minimal_representation(self) -> Compound:
+        return Compound(
+            {
+                "id": String(self.base_item),
+                "components": Compound({
+                    "minecraft:item_name": Compound(self.get_item_name()),
+                })
+            }
+        )
     
 
 
@@ -314,7 +325,7 @@ kill @s
                                         "function": "minecraft:set_name",
                                         "entity": "this",
                                         "target": "item_name",
-                                        "name": self.item_name if not isinstance(self.item_name, tuple) else self.get_item_name(),
+                                        "name": self.get_item_name(),
                                     },
                                     {
                                         "function": "minecraft:set_lore",
@@ -332,6 +343,8 @@ kill @s
         )
 
     def get_item_name(self):
+        if not isinstance(self.item_name, tuple):
+            return self.item_name
         return {
             "translate": self.item_name[0],
             "color": "white",

@@ -42,6 +42,10 @@ class VanillaItem:
     @property
     def model_path(self):
         return f"minecraft:item/{self.id.replace('minecraft:', '')}"
+    
+    @property
+    def minimal_representation(self) -> Compound:
+        return Compound({"id": String(self.id)})
 
 
 @dataclass
