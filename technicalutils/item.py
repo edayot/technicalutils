@@ -54,6 +54,13 @@ class Item:
     is_armor: bool = False
 
     char_index: int = 0
+    page_index: int = -1
+
+    _count_to_char_index: dict[int, tuple[int, str]] = field(default_factory=dict)
+
+    def count_to_char_index(self, count: int = 0):
+        print(f"count_to_char_index {count} {self.char_index} {self._count_to_char_index}")
+        return self.char_index + self._count_to_char_index[count][0]
 
     @property
     def loot_table_path(self):
@@ -68,15 +75,16 @@ class Item:
         return f"{NAMESPACE}:item/{self.id}"
     
     @property
-    def minimal_representation(self) -> Compound:
-        return Compound(
-            {
-                "id": String(self.base_item),
-                "components": Compound({
-                    "minecraft:item_name": Compound(self.get_item_name()),
-                })
+    def minimal_representation(self) -> dict:
+        return {
+            "id": self.base_item,
+            "components": {
+                "minecraft:item_name": json.dumps(self.get_item_name()),
             }
-        )
+        }
+    
+    def __hash__(self):
+        return hash(self.id)
     
 
 

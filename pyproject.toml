@@ -53,6 +53,7 @@ pipeline = [
     "beet.contrib.unknown_files",
     "technicalutils",
     "technicalutils.export",
+    "technicalutils.guide",
     "technicalutils.versioning",
     "mecha",
 ]

@@ -1,0 +1,389 @@
+[
+    "",
+    {
+        "text": "\n\uef13 \uef14\n",
+        "font": "technicalutils:pages",
+        "color": "white"
+    },
+    "\n",
+    {
+        "text": "\uef00\uef00",
+        "font": "technicalutils:pages",
+        "color": "white"
+    },
+    {
+        "text": "\uef03\uff1a\uef03",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:jigsaw",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.ingot\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        }
+    },
+    {
+        "text": "\uef03\uff1a\uef03",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:jigsaw",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.ingot\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        }
+    },
+    {
+        "text": "\uef03\uff1a\uef03",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:jigsaw",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.ingot\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        }
+    },
+    "\n",
+    {
+        "text": "\uef00\uef00",
+        "font": "technicalutils:pages",
+        "color": "white"
+    },
+    {
+        "text": "\uef01",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:jigsaw",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.ingot\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        }
+    },
+    {
+        "text": "\uef01",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:jigsaw",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.ingot\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        }
+    },
+    {
+        "text": "\uef01",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:jigsaw",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.ingot\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        }
+    },
+    {
+        "text": "\uef00\uef00\uef00\uef00",
+        "font": "technicalutils:pages",
+        "color": "white"
+    },
+    {
+        "text": "\uef02\uef02",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:furnace",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.block\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        },
+        "clickEvent": {
+            "action": "change_page",
+            "value": "0"
+        }
+    },
+    "\n",
+    {
+        "text": "\uef00\uef00",
+        "font": "technicalutils:pages",
+        "color": "white"
+    },
+    {
+        "text": "\uef03\uff1b\uef03",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:jigsaw",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.ingot\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        }
+    },
+    {
+        "text": "\uef03\uff1b\uef03",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:jigsaw",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.ingot\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        }
+    },
+    {
+        "text": "\uef03\uff1b\uef03",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:jigsaw",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.ingot\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        }
+    },
+    {
+        "text": "\uef00\uef00\uef00\uef00",
+        "font": "technicalutils:pages",
+        "color": "white"
+    },
+    {
+        "text": "\uef00\uef00\uef03\uff10\uef00\uef00\uef03\uef00",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:furnace",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.block\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        },
+        "clickEvent": {
+            "action": "change_page",
+            "value": "0"
+        }
+    },
+    "\n",
+    {
+        "text": "\uef00\uef00",
+        "font": "technicalutils:pages",
+        "color": "white"
+    },
+    {
+        "text": "\uef01",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:jigsaw",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.ingot\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        }
+    },
+    {
+        "text": "\uef01",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:jigsaw",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.ingot\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        }
+    },
+    {
+        "text": "\uef01",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:jigsaw",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.ingot\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        }
+    },
+    {
+        "text": "\uef00\uef00\uef00\uef00",
+        "font": "technicalutils:pages",
+        "color": "white"
+    },
+    {
+        "text": "\uef02\uef02",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:furnace",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.block\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        },
+        "clickEvent": {
+            "action": "change_page",
+            "value": "0"
+        }
+    },
+    "\n",
+    {
+        "text": "\uef00\uef00",
+        "font": "technicalutils:pages",
+        "color": "white"
+    },
+    {
+        "text": "\uef03\uff1c\uef03",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:jigsaw",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.ingot\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        }
+    },
+    {
+        "text": "\uef03\uff1c\uef03",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:jigsaw",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.ingot\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        }
+    },
+    {
+        "text": "\uef03\uff1c\uef03",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:jigsaw",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.ingot\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        }
+    },
+    {
+        "text": "\uef00\uef00\uef00\uef00",
+        "font": "technicalutils:pages",
+        "color": "white"
+    },
+    {
+        "text": "\uef02\uef02",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:furnace",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.block\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        },
+        "clickEvent": {
+            "action": "change_page",
+            "value": "0"
+        }
+    },
+    "\n",
+    {
+        "text": "\uef00\uef00",
+        "font": "technicalutils:pages",
+        "color": "white"
+    },
+    {
+        "text": "\uef01",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:jigsaw",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.ingot\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        }
+    },
+    {
+        "text": "\uef01",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:jigsaw",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.ingot\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        }
+    },
+    {
+        "text": "\uef01",
+        "font": "technicalutils:pages",
+        "color": "white",
+        "hoverEvent": {
+            "action": "show_item",
+            "contents": {
+                "id": "minecraft:jigsaw",
+                "components": {
+                    "minecraft:item_name": "{\"translate\": \"technicalutils.mineral_name.ingot\", \"with\": [{\"translate\": \"technicalutils.mineral.silver\"}], \"color\": \"white\"}"
+                }
+            }
+        }
+    },
+    "\n"
+]

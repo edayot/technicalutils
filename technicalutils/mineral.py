@@ -518,12 +518,15 @@ class Mineral:
             types=["furnace", "blast_furnace"],
         ).export(ctx)
 
+        stick = VanillaItem("minecraft:stick")
+        stick = VanillaItem("minecraft:stick")
+
         if pickaxe := self.get_item("pickaxe"):
             ShapedRecipe(
                 items=[
                     [ingot, ingot, ingot],
-                    [None, VanillaItem("minecraft:stick"), None],
-                    [None, VanillaItem("minecraft:stick"), None],
+                    [None, stick, None],
+                    [None, stick, None],
                 ],
                 result=(pickaxe, 1),
             ).export(ctx)
@@ -531,8 +534,8 @@ class Mineral:
             ShapedRecipe(
                 items=[
                     [ingot, ingot, None],
-                    [ingot, VanillaItem("minecraft:stick"), None],
-                    [None, VanillaItem("minecraft:stick"), None],
+                    [ingot, stick, None],
+                    [None, stick, None],
                 ],
                 result=(axe, 1),
             ).export(ctx)
@@ -540,8 +543,8 @@ class Mineral:
             ShapedRecipe(
                 items=[
                     [ingot, None, None],
-                    [VanillaItem("minecraft:stick"), None, None],
-                    [VanillaItem("minecraft:stick"), None, None],
+                    [stick, None, None],
+                    [stick, None, None],
                 ],
                 result=(shovel, 1),
             ).export(ctx)
@@ -549,8 +552,8 @@ class Mineral:
             ShapedRecipe(
                 items=[
                     [ingot, ingot, None],
-                    [None, VanillaItem("minecraft:stick"), None],
-                    [None, VanillaItem("minecraft:stick"), None],
+                    [None, stick, None],
+                    [None, stick, None],
                 ],
                 result=(hoe, 1),
             ).export(ctx)
@@ -559,7 +562,7 @@ class Mineral:
                 items=[
                     [ingot, None, None],
                     [ingot, None, None],
-                    [VanillaItem("minecraft:stick"), None, None],
+                    [stick, None, None],
                 ],
                 result=(sword, 1),
             ).export(ctx)

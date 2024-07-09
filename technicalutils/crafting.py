@@ -12,20 +12,40 @@ from nbtlib.tag import (
     Float,
     Double,
 )
-from typing import Any, Literal
+from typing import Any, Literal, Union
 from beet import Context, Function, FunctionTag, Recipe
 from .item import Item
 from .types import NAMESPACE
+import json
+
+ItemType = Union[Item, "VanillaItem"]
 
 VanillaRegistry : dict[str, "VanillaItem"] = {}
+ShapedRecipeRegistry : dict[ItemType, "ShapedRecipe"] = {}
 
 @dataclass
 class VanillaItem:
     id: str
     char_index: int = None
+    page_index: int = -1
+
+    _count_to_char_index: dict[int, tuple[int, str]] = field(default_factory=dict)
+
+    @property
+    def count_to_char_index(self, count: int = 0):
+        return self.char_index + self._count_to_char_index[count][0]
+
+    def __hash__(self) -> int:
+        return hash(self.id)
+    
+    def __new__(cls, id: str, char_index: int = None, page_index: int = -1):
+        if id in VanillaRegistry:
+            return VanillaRegistry[id]
+        return super().__new__(cls)
 
     def __post_init__(self):
         VanillaRegistry[self.id] = self
+    
 
 
     def to_nbt(self, i: int):
@@ -44,14 +64,18 @@ class VanillaItem:
         return f"minecraft:item/{self.id.replace('minecraft:', '')}"
     
     @property
-    def minimal_representation(self) -> Compound:
-        return Compound({"id": String(self.id)})
+    def minimal_representation(self) -> dict:
+        return {"id": self.id}
 
 
 @dataclass
 class ShapedRecipe:
     items: list[list[Item | VanillaItem | None]]
     result: tuple[Item | VanillaItem, int]
+
+    def __post_init__(self):
+        
+        ShapedRecipeRegistry[self.result[0]] = self
 
     def export(self, ctx: Context):
         """
