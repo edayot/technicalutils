@@ -12,6 +12,7 @@ mecha = ">=0.94.0"
 weld-deps = ">=0.7.0"
 frozendict = "^2.4.2"
 bolt = "^0.48.0"
+model-resolver = "^0.9.0"
 
 [tool.poetry.dev-dependencies]
 python-semantic-release = "^8.7.0"
@@ -84,6 +85,11 @@ match = ["technicalutils:**"]
 enable_weld_merging=true
 clean_load_tag=false
 include_prerelease=false
+
+[tool.beet.meta.model_resolver]
+render_size = 256
+load_vanilla = true
+save_namespace = "technicalutils"
 
 
 [[tool.beet.meta.weld_deps.deps]]

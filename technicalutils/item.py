@@ -53,17 +53,30 @@ class Item:
     is_cookable: bool = False
     is_armor: bool = False
 
+    @property
+    def loot_table_path(self):
+        return f"{NAMESPACE}:items/{self.id}"
+    
+    @property
+    def namespace_id(self):
+        return f"{NAMESPACE}:{self.id}"
+    
+    @property
+    def model_path(self):
+        return f"{NAMESPACE}:item/{self.id}"
+    
+
+
     def __post_init__(self):
         assert self.id not in Registry, f"Item {self.id} already exists"
         Registry[self.id] = self
 
     def result_command(self, count: int, type : str = "block", slot : int = 16) -> str:
-        loot_table_name = f"{NAMESPACE}:items/{self.id}"
         if count == 1:
             if type == "block":
-                return f"loot replace block ~ ~ ~ container.{slot} loot {loot_table_name}"
+                return f"loot replace block ~ ~ ~ container.{slot} loot {self.loot_table_path}"
             elif type == "entity":
-                return f"loot replace entity @s container.{slot} loot {loot_table_name}"
+                return f"loot replace entity @s container.{slot} loot {self.loot_table_path}"
             else:
                 raise ValueError(f"Invalid type {type}")
         loot_table_inline = {
@@ -73,7 +86,7 @@ class Item:
                     "entries": [
                         {
                             "type": "minecraft:loot_table",
-                            "value": loot_table_name,
+                            "value": self.loot_table_path,
                             "functions": [
                                 {"function": "minecraft:set_count", "count": count}
                             ],
@@ -98,7 +111,7 @@ class Item:
                         "minecraft:custom_data": Compound(
                             {
                                 "smithed": Compound(
-                                    {"id": String(f"{NAMESPACE}:{self.id}")}
+                                    {"id": String(self.namespace_id)}
                                 )
                             }
                         )
@@ -126,12 +139,12 @@ class Item:
 
     def create_custom_data(self):
         res = {
-            "smithed": {"id": f"{NAMESPACE}:{self.id}"},
+            "smithed": {"id": self.namespace_id},
         }
         if self.is_cookable:
             res["nbt_smelting"] = Byte(1)
         if self.block_properties:
-            res["smithed"]["block"] = {"id": f"{NAMESPACE}:{self.id}"}
+            res["smithed"]["block"] = {"id": self.namespace_id}
         return res
 
     def create_custom_block(self, ctx: Context):
@@ -249,7 +262,6 @@ prepend function ./on_place/{self.id}/place_entity:
         )
     
     def create_custom_block_destroy(self, ctx: Context):
-        loot_table_name = f"{NAMESPACE}:items/{self.id}"
         destroy_function_id = f"{NAMESPACE}:impl/blocks/destroy/{self.id}"
         if destroy_function_id not in ctx.data.functions:
             ctx.data.functions[destroy_function_id] = Function()
@@ -257,7 +269,7 @@ prepend function ./on_place/{self.id}/place_entity:
 execute
     as @e[type=item,nbt={{Item:{{id:"{self.block_properties["base_block"]}",count:1}}}},limit=1,sort=nearest,distance=..3]
     run function ~/spawn_item:
-        loot spawn ~ ~ ~ loot {loot_table_name}
+        loot spawn ~ ~ ~ loot {self.loot_table_path}
         kill @s
 
 kill @s
@@ -279,7 +291,7 @@ kill @s
         return res
 
     def create_loot_table(self, ctx: Context):
-        ctx.data.loot_tables[f"{NAMESPACE}:items/{self.id}"] = LootTable(
+        ctx.data.loot_tables[self.loot_table_path] = LootTable(
             {
                 "pools": [
                     {
@@ -335,35 +347,35 @@ kill @s
         ctx.assets.models[key].data["overrides"].append(
             {
                 "predicate": {"custom_model_data": self.custom_model_data},
-                "model": (model_path := f"{NAMESPACE}:item/{self.id}"),
+                "model": self.model_path,
             }
         )
         # create the custom model
-        if model_path in ctx.assets.models:
+        if self.model_path in ctx.assets.models:
             return
         if not self.block_properties and not self.is_armor:
-            ctx.assets.models[model_path] = Model(
-                {"parent": "item/generated", "textures": {"layer0": model_path}}
+            ctx.assets.models[self.model_path] = Model(
+                {"parent": "item/generated", "textures": {"layer0": self.model_path}}
             )
         elif not self.block_properties and self.is_armor:
-            ctx.assets.models[model_path] = Model(
+            ctx.assets.models[self.model_path] = Model(
                 {
                     "parent": "item/generated",
                     "textures": {
                         "layer0": f"{NAMESPACE}:item/clear",
-                        "layer1": f"{NAMESPACE}:item/{self.id}"
+                        "layer1": self.model_path,
                     },
                 }
             )
         elif self.block_properties.get("all_same_faces", True):
-            ctx.assets.models[model_path] = Model(
+            ctx.assets.models[self.model_path] = Model(
                 {
                     "parent": "minecraft:block/cube_all",
                     "textures": {"all": f"{NAMESPACE}:block/{self.id}"},
                 }
             )
         else:
-            ctx.assets.models[model_path] = Model(
+            ctx.assets.models[self.model_path] = Model(
                 {
                     "parent": "minecraft:block/orientable_with_bottom",
                     "textures": {
