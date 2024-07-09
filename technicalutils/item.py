@@ -53,6 +53,8 @@ class Item:
     is_cookable: bool = False
     is_armor: bool = False
 
+    char_index: int = 0
+
     @property
     def loot_table_path(self):
         return f"{NAMESPACE}:items/{self.id}"

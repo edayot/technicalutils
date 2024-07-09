@@ -17,10 +17,16 @@ from beet import Context, Function, FunctionTag, Recipe
 from .item import Item
 from .types import NAMESPACE
 
+VanillaRegistry : dict[str, "VanillaItem"] = {}
 
 @dataclass
 class VanillaItem:
     id: str
+    char_index: int = None
+
+    def __post_init__(self):
+        VanillaRegistry[self.id] = self
+
 
     def to_nbt(self, i: int):
         return Compound({"id": String(self.id), "Slot": Byte(i)})
@@ -32,6 +38,10 @@ class VanillaItem:
             return f"item replace entity @s container.{slot} with {self.id} {count} "
         else:
             raise ValueError(f"Invalid type {type}")
+    
+    @property
+    def model_path(self):
+        return f"minecraft:item/{self.id.replace('minecraft:', '')}"
 
 
 @dataclass
