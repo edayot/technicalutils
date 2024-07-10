@@ -1,0 +1,18 @@
+[
+	{
+	  "function": "minecraft:set_lore",
+	  "entity": "this",
+	  "lore": [
+		  {
+			"nbt": "temp.filters[0]",
+			"storage": "technicalutils:main",
+			"interpret": false,
+			"color": "white",
+			"italic": false
+		}
+	  ],
+	  "mode": "append"
+
+	}
+  ]
+  

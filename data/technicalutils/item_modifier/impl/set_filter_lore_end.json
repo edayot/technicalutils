@@ -1,0 +1,14 @@
+[
+	{
+		"function": "minecraft:set_lore",
+		"entity": "this",
+		"lore": [
+			{
+				"translate": "technicalutils.name",
+				"color": "blue",
+				"italic": false
+			}
+		],
+		"mode": "append"
+	}
+]

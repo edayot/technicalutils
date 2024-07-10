@@ -103,12 +103,19 @@ execute
     run {self.result[0].result_command(self.result[1])}
 """
         tag_smithed_crafter_recipes = "smithed.crafter:event/recipes"
+        tag_namespace = f"{NAMESPACE}:smithed.crafter/recipes"
         if not tag_smithed_crafter_recipes in ctx.data.function_tags:
             ctx.data.function_tags[tag_smithed_crafter_recipes] = FunctionTag()
+        if not tag_namespace in ctx.data.function_tags:
+            ctx.data.function_tags[tag_namespace] = FunctionTag()
         if function_path not in ctx.data.functions:
             ctx.data.functions[function_path] = Function("# @public\n\n")
-        if function_path_calls not in ctx.data.function_tags[tag_smithed_crafter_recipes].data["values"]:
+        if f"#{tag_namespace}" not in ctx.data.function_tags[tag_smithed_crafter_recipes].data["values"]:
             ctx.data.function_tags[tag_smithed_crafter_recipes].data["values"].append(
+                f"#{tag_namespace}"
+            )
+        if function_path_calls not in ctx.data.function_tags[tag_namespace].data["values"]:
+            ctx.data.function_tags[tag_namespace].data["values"].append(
                 function_path_calls
             )
 
@@ -124,7 +131,7 @@ class ShapelessRecipe:
         """
         This function export the smithed crafter recipes to the ctx variable.
         """
-        count = len(self.items)
+        global_count = len(self.items)
 
         recipe = List[Compound]([])
         for i, (item, count) in enumerate(self.items):
@@ -139,7 +146,7 @@ class ShapelessRecipe:
 execute 
     store result score @s smithed.data 
     if entity @s[scores={{smithed.data=0}}] 
-    if score count smithed.data matches {count} 
+    if score count smithed.data matches {global_count} 
     if data storage smithed.crafter:input {{recipe:{serialize_tag(recipe)}}}
     run {result_command}
 """
@@ -148,14 +155,21 @@ execute
         tag_smithed_crafter_shapeless_recipes = (
             "smithed.crafter:event/shapeless_recipes"
         )
+        tag_namespace = f"{NAMESPACE}:smithed.crafter/shapeless_recipes"
         if not tag_smithed_crafter_shapeless_recipes in ctx.data.function_tags:
             ctx.data.function_tags[
                 tag_smithed_crafter_shapeless_recipes
             ] = FunctionTag()
+        if not tag_namespace in ctx.data.function_tags:
+            ctx.data.function_tags[tag_namespace] = FunctionTag()
         if function_path not in ctx.data.functions:
             ctx.data.functions[function_path] = Function("# @public\n\n")
-        if function_path_calls not in ctx.data.functions_tags[tag_smithed_crafter_shapeless_recipes].data["values"]:
+        if f"#{tag_namespace}" not in ctx.data.function_tags[tag_smithed_crafter_shapeless_recipes].data["values"]:
             ctx.data.function_tags[tag_smithed_crafter_shapeless_recipes].data[
+                "values"
+            ].append(f"#{tag_namespace}")
+        if function_path_calls not in ctx.data.function_tags[tag_namespace].data["values"]:
+            ctx.data.function_tags[tag_namespace].data[
                 "values"
             ].append(function_path_calls)
 

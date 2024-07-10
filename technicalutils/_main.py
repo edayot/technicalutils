@@ -2,7 +2,7 @@ from beet import Context
 from .types import NAMESPACE, Lang
 from .mineral import Mineral
 from .item import Item, Registry
-from .crafting import VanillaItem, ShapedRecipe, SimpledrawerMaterial
+from .crafting import VanillaItem, ShapedRecipe, SimpledrawerMaterial, ShapelessRecipe
 from .utils import export_translated_string
 import json
 
@@ -151,6 +151,7 @@ def beet_default(ctx: Context):
     glass = VanillaItem("minecraft:glass")
     redstone_block = VanillaItem("minecraft:redstone_block")
     comparator = VanillaItem("minecraft:comparator")
+    hopper = VanillaItem("minecraft:hopper")
 
     ShapedRecipe(
         [
@@ -231,4 +232,31 @@ def beet_default(ctx: Context):
         ),
         custom_model_data=1432006,
     )
+
+    ShapedRecipe(
+        [
+            [None, iron_ingot, None],
+            [None, silver_ingot, iron_ingot],
+            [iron_ingot, None, None],
+        ],
+        (wrench, 1)
+    ).export(ctx)
+
+    id_filter = Item(
+        id="id_filter",
+        item_name=(
+            f"{NAMESPACE}.item.id_filter",
+            {Lang.en_us: "ID Filter", Lang.fr_fr: "Filtre d'ID"},
+        ),
+        custom_model_data=1432007,
+    )
+
+    ShapelessRecipe(
+        [(id_filter, 1)],
+        (id_filter, 1),
+    ).export(ctx)
+    ShapelessRecipe(
+        [(hopper, 1), (silver_ingot, 1)],
+        (id_filter, 1),
+    ).export(ctx)
 
