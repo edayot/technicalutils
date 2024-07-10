@@ -51,7 +51,7 @@ def beet_default(ctx: Context):
 
 
 CHAR_INDEX_NUMBER = 0x0030
-CHAR_OFFSET = 0x10
+CHAR_OFFSET = 0x4
 def char_index_number():
     global CHAR_INDEX_NUMBER
     CHAR_INDEX_NUMBER += CHAR_OFFSET

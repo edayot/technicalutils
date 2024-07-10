@@ -58,7 +58,7 @@ class Item:
 
     @property
     def loot_table_path(self):
-        return f"{NAMESPACE}:items/{self.id}"
+        return f"{NAMESPACE}:impl/items/{self.id}"
     
     @property
     def namespace_id(self):

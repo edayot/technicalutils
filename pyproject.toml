@@ -136,7 +136,12 @@ source = "smithed"
 
 [[tool.beet.meta.weld_deps.deps]]
 id = "common_signals"
-match = ">=0.0.1"
+match = ">=0.0.3"
+source = "smithed"
+
+[[tool.beet.meta.weld_deps.deps]]
+id = "custom_block_ext"
+match = ">=0.2.0"
 source = "smithed"
 
 [tool.beet.meta.smithed.versioning]
