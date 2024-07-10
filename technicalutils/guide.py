@@ -29,18 +29,6 @@ def beet_default(ctx: Context):
         img.putpixel((0,0),(137,137,137,255))
         img.putpixel((img.width-1,img.height-1),(137,137,137,255))
         ctx.assets.textures[path] = Texture(img.copy())
-        if craft := ShapedRecipeRegistry.get(item):
-            if (count := craft.result[1]) == 1:
-                continue
-            path_count = f"{path}_{count}"
-            img_overlay = image_count(count)
-            # draw img_overlay over img
-            img = img.copy()
-            img.paste(img_overlay, (0,0), img_overlay)
-            ctx.assets.textures[path_count] = Texture(img.copy())
-
-            assert len(item._count_to_char_index) < CHAR_OFFSET - 3
-            item._count_to_char_index[count] = (len(item._count_to_char_index) + 1, path_count)
 
     create_font(ctx, all_items)
 
@@ -69,19 +57,25 @@ def char_index_number():
     CHAR_INDEX_NUMBER += CHAR_OFFSET
     return CHAR_INDEX_NUMBER
 
+COUNT_TO_CHAR = {}
+
 
 def create_font(ctx: Context, ITEMS: list[VanillaItem | Item]):
+    global CHAR_INDEX_NUMBER
     font_path = f"{NAMESPACE}:pages"
+    release = '_release'
+    if False:
+        release = ''
     ctx.assets.fonts[font_path] = Font({
         "providers": [
         {
             "type": "reference",
             "id": "minecraft:include/space"
         },
-        { "type": "bitmap", "file": f"{NAMESPACE}:item/font/none_2_release.png",				"ascent": 7, "height": 8, "chars": ["\uef00"] },
-        { "type": "bitmap", "file": f"{NAMESPACE}:item/font/none_3_release.png",				"ascent": 7, "height": 8, "chars": ["\uef01"] },
-        { "type": "bitmap", "file": f"{NAMESPACE}:item/font/none_4_release.png",				"ascent": 7, "height": 8, "chars": ["\uef02"] },
-        { "type": "bitmap", "file": f"{NAMESPACE}:item/font/none_5_release.png",				"ascent": 7, "height": 8, "chars": ["\uef03"] },
+        { "type": "bitmap", "file": f"{NAMESPACE}:item/font/none_2{release}.png",				"ascent": 7, "height": 8, "chars": ["\uef00"] },
+        { "type": "bitmap", "file": f"{NAMESPACE}:item/font/none_3{release}.png",				"ascent": 7, "height": 8, "chars": ["\uef01"] },
+        { "type": "bitmap", "file": f"{NAMESPACE}:item/font/none_4{release}.png",				"ascent": 7, "height": 8, "chars": ["\uef02"] },
+        { "type": "bitmap", "file": f"{NAMESPACE}:item/font/none_5{release}.png",				"ascent": 7, "height": 8, "chars": ["\uef03"] },
         { "type": "bitmap", "file": f"{NAMESPACE}:item/font/template_craft.png",				"ascent": -3, "height": 68, "chars": ["\uef13"] },
         { "type": "bitmap", "file": f"{NAMESPACE}:item/font/template_result.png",				"ascent": -20, "height": 34, "chars": ["\uef14"] },
 
@@ -107,19 +101,26 @@ def create_font(ctx: Context, ITEMS: list[VanillaItem | Item]):
                     "chars": [char_item]
                 }
             )
-
-        for count, (index, path) in item._count_to_char_index.items():
-            char_item = f"\\u{item.count_to_char_index(count):04x}".encode().decode("unicode_escape")
-            ctx.assets.fonts[font_path].data["providers"].append(
-                {
-                    "type": "bitmap",
-                    "file": f"{path}.png",
-                    "ascent": 7,
-                    "height": 16,
-                    "chars": [char_item]
-                }
-            )
-
+    for count in range(2,100):
+        # Create the image
+        img = image_count(count)
+        img.putpixel((0,0),(137,137,137,255))
+        img.putpixel((img.width-1,img.height-1),(137,137,137,255))
+        tex_path = f"{NAMESPACE}:item/font/number/{count}"
+        ctx.assets.textures[tex_path] = Texture(img)
+        char_count = CHAR_INDEX_NUMBER
+        CHAR_INDEX_NUMBER += 1
+        char_index = f"\\u{char_count:04x}".encode().decode("unicode_escape")
+        ctx.assets.fonts[font_path].data["providers"].append(
+            {
+                "type": "bitmap",
+                "file": tex_path + ".png",
+                "ascent": 10,
+                "height": 24,
+                "chars": [char_index]
+            }
+        )
+        COUNT_TO_CHAR[count] = char_index
 
 
 
@@ -168,22 +169,27 @@ def generate_craft(craft: list[list[Item| VanillaItem]], result: Item, count: in
                     craft[i][j] = item
                 char_item = f"\\u{item.char_index + i:04x}".encode().decode("unicode_escape")
                 page.append(get_item_json(item, font_path, f'\uef03{char_item}\uef03' if e == 0 else "\uef01"))
-            if (i == 0 and e == 1) or (i == 1 and e == 1) or (i == 2 and e == 0):
+            if (i == 0 and e == 1) or (i == 2 and e == 0):
                 page.append({"text":"\uef00\uef00\uef00\uef00","font":font_path,"color":"white"})
-                page.append(get_item_json(result, font_path, "\uef02\uef02"))
+                char_space = "\uef02\uef02"
+                page.append(get_item_json(result, font_path, char_space))
             if i == 1 and e == 0:
                 page.append({"text":"\uef00\uef00\uef00\uef00","font":font_path,"color":"white"})
-                if count == 1:
-                    char_result = f"\\u{result.char_index:04x}".encode().decode("unicode_escape")
-                else:
-                    char_result = f"\\u{result.count_to_char_index(count):04x}".encode().decode("unicode_escape")
+                char_result = f"\\u{result.char_index:04x}".encode().decode("unicode_escape")
                 char_space = "\uef00\uef00\uef03"
                 page.append(get_item_json(result, font_path, f'{char_space}{char_result}{char_space}\uef00'))
+            if i == 1 and e == 1:
+                page.append({"text":"\uef00\uef00\uef00\uef00","font":font_path,"color":"white"})
+                char_space = "\uef02\uef02"
+                if count > 1:
+                    char_count = COUNT_TO_CHAR[count]
+                    char_space = f"\uef00\uef00\uef00{char_count}"
+                page.append(get_item_json(result, font_path, char_space))
             page.append("\n")
     return json.dumps(page)
 
 
-def image_count(count: int) -> Image:
+def image_count(count: int) -> Image.Image:
 	""" Generate an image showing the result count
 	Args:
 		count (int): The count to show
@@ -191,16 +197,16 @@ def image_count(count: int) -> Image:
 		Image: The image with the count
 	"""
 	# Create the image
-	size = 256
+	size = 64
 	img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
 	draw = ImageDraw.Draw(img)
-	font_size = 64
+	font_size = 24
 	font = ImageFont.truetype(f"./assets/minecraft_font.ttf", size = font_size)
 
 	# Calculate text size and positions of the two texts
 	text_width = draw.textlength(str(count), font = font)
 	text_height = font_size + 6
-	pos_1 = (size-text_width), (size-text_height)
+	pos_1 = (45-text_width), (0)
 	pos_2 = (pos_1[0]-2, pos_1[1]-2)
 	
 	# Draw the count

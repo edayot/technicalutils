@@ -56,12 +56,6 @@ class Item:
     char_index: int = 0
     page_index: int = -1
 
-    _count_to_char_index: dict[int, tuple[int, str]] = field(default_factory=dict)
-
-    def count_to_char_index(self, count: int = 0):
-        print(f"count_to_char_index {count} {self.char_index} {self._count_to_char_index}")
-        return self.char_index + self._count_to_char_index[count][0]
-
     @property
     def loot_table_path(self):
         return f"{NAMESPACE}:items/{self.id}"

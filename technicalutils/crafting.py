@@ -29,11 +29,6 @@ class VanillaItem:
     char_index: int = None
     page_index: int = -1
 
-    _count_to_char_index: dict[int, tuple[int, str]] = field(default_factory=dict)
-
-    @property
-    def count_to_char_index(self, count: int = 0):
-        return self.char_index + self._count_to_char_index[count][0]
 
     def __hash__(self) -> int:
         return hash(self.id)
