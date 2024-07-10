@@ -94,6 +94,7 @@ class ShapedRecipe:
                 )
 
         function_path = f"{NAMESPACE}:impl/smithed.crafter/recipes"
+        function_path_calls = f"{NAMESPACE}:impl/calls/smithed.crafter/recipes"
         command = f"""
 execute 
     store result score @s smithed.data 
@@ -106,11 +107,9 @@ execute
             ctx.data.function_tags[tag_smithed_crafter_recipes] = FunctionTag()
         if function_path not in ctx.data.functions:
             ctx.data.functions[function_path] = Function("# @public\n\n")
-            ctx.data.functions[function_path].append(
-                "data modify storage test recipe set from storage smithed.crafter:input recipe"
-            )
+        if function_path_calls not in ctx.data.function_tags[tag_smithed_crafter_recipes].data["values"]:
             ctx.data.function_tags[tag_smithed_crafter_recipes].data["values"].append(
-                f"#{NAMESPACE}:calls/smithed.crafter/recipes"
+                function_path_calls
             )
 
         ctx.data.functions[function_path].append(command)
@@ -145,6 +144,7 @@ execute
     run {result_command}
 """
         function_path = f"{NAMESPACE}:impl/smithed.crafter/shapeless_recipes"
+        function_path_calls = f"{NAMESPACE}:impl/calls/smithed.crafter/shapeless_recipes"
         tag_smithed_crafter_shapeless_recipes = (
             "smithed.crafter:event/shapeless_recipes"
         )
@@ -154,9 +154,10 @@ execute
             ] = FunctionTag()
         if function_path not in ctx.data.functions:
             ctx.data.functions[function_path] = Function("# @public\n\n")
+        if function_path_calls not in ctx.data.functions_tags[tag_smithed_crafter_shapeless_recipes].data["values"]:
             ctx.data.function_tags[tag_smithed_crafter_shapeless_recipes].data[
                 "values"
-            ].append(f"#{NAMESPACE}:calls/smithed.crafter/shapeless_recipes")
+            ].append(function_path_calls)
 
         ctx.data.functions[function_path].append(command)
 

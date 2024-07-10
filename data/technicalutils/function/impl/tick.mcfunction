@@ -1,17 +1,17 @@
 
 
 execute 
-    as @e[tag=technicalutils.block.lodestone,predicate=!technicalutils:block/destroy_lodestone] 
+    as @e[type=item_display,tag=technicalutils.block.lodestone,predicate=!technicalutils:block/destroy_lodestone] 
     at @s
     run function ./blocks/destroy_lodestone
 
 execute 
-    as @e[tag=technicalutils.block.conduit,predicate=!technicalutils:block/destroy_conduit] 
+    as @e[type=item_display,tag=technicalutils.block.conduit,predicate=!technicalutils:block/destroy_conduit] 
     at @s
     run function ./blocks/destroy_conduit
 
 execute 
-    as @e[tag=technicalutils.block.conduit,predicate=!technicalutils:block/underwater_conduit] 
+    as @e[type=item_display,tag=technicalutils.block.conduit,predicate=!technicalutils:block/underwater_conduit] 
     at @s
     run function ./blocks/underwater_conduit
 
@@ -24,10 +24,6 @@ execute
     unless data entity @s Item.count 
     run function technicalutils:impl/servo/destroy
 
-execute
-    as @e[tag=technicalutils.servo]
-    unless data entity @s {ItemRotation:0b}
-    run function technicalutils:impl/servo/flip
 
 
 schedule function technicalutils:impl/tick 2t replace
