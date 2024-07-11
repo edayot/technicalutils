@@ -10,6 +10,29 @@ import json
 
 
 def beet_default(ctx: Context):
+    reset_cache = False
+    cache = ctx.cache[f"{NAMESPACE}_guide"]
+    if not reset_cache:
+        namespaced_things = [
+            ("textures",Texture,"assets"),
+            ("fonts",Font,"assets"),
+            ("loot_tables",LootTable,"data"),
+            ("item_modifiers",ItemModifier,"data")
+        ]
+        if all(key[0] in cache.json for key in namespaced_things):
+            for namespaced in namespaced_things:
+                for key in cache.json[namespaced[0]]:
+                    key_version = key.replace(f":impl/", f":v{ctx.project_version}/")
+                    if namespaced[2] == "data":
+                        ctx.data[namespaced[1]][key_version] = namespaced[1](source_path=cache.get_path(key))
+                    elif namespaced[2] == "assets":
+                        ctx.assets[namespaced[1]][key_version] = namespaced[1](source_path=cache.get_path(key))
+                    else:
+                        raise ValueError(f"Invalid namespaced type {namespaced[2]}")
+            return
+    else:
+        cache.clear()
+    
     air = VanillaItem("minecraft:air")
     items = Registry.values()
     vanilla_items = VanillaRegistry.values()
@@ -18,6 +41,7 @@ def beet_default(ctx: Context):
     all_items : list[VanillaItem | Item] = list(items) + list(vanilla_items)
     ctx.meta["model_resolver"]["filter"] = filter
     model_resolver(ctx)
+    cache.json["textures"] = []
     for item in all_items:
         model_path = item.model_path
         path = f"technicalutils:render/{model_path.replace(':', '/')}"
@@ -29,9 +53,17 @@ def beet_default(ctx: Context):
         img.putpixel((0,0),(137,137,137,255))
         img.putpixel((img.width-1,img.height-1),(137,137,137,255))
         ctx.assets.textures[path] = Texture(img.copy())
+        with open(cache.get_path(path), "wb") as f:
+            img.save(f, "PNG")
+        cache.json["textures"].append(path)
 
     create_font(ctx, all_items)
-
+    font_path = f"{NAMESPACE}:pages"
+    font = ctx.assets.fonts[font_path].data
+    with open(cache.get_path(font_path), "w") as f:
+        json.dump(font, f, indent=4)
+    cache.json["fonts"] = []
+    cache.json["fonts"].append(font_path)
     pages = []
     page_index = 0
     for item in items:
@@ -101,6 +133,7 @@ def create_font(ctx: Context, ITEMS: list[VanillaItem | Item]):
                     "chars": [char_item]
                 }
             )
+    cache = ctx.cache[f"{NAMESPACE}_guide"]
     for count in range(2,100):
         # Create the image
         img = image_count(count)
@@ -108,6 +141,9 @@ def create_font(ctx: Context, ITEMS: list[VanillaItem | Item]):
         img.putpixel((img.width-1,img.height-1),(137,137,137,255))
         tex_path = f"{NAMESPACE}:item/font/number/{count}"
         ctx.assets.textures[tex_path] = Texture(img)
+        with open(cache.get_path(tex_path), "wb") as f:
+            img.save(f, "PNG")
+        cache.json["textures"].append(tex_path)
         char_count = CHAR_INDEX_NUMBER
         CHAR_INDEX_NUMBER += 1
         char_index = f"\\u{char_count:04x}".encode().decode("unicode_escape")
@@ -121,6 +157,8 @@ def create_font(ctx: Context, ITEMS: list[VanillaItem | Item]):
             }
         )
         COUNT_TO_CHAR[count] = char_index
+
+        
 
 
 
@@ -270,4 +308,15 @@ def create_loot_table(ctx: Context, pages: list[str]):
 
     loot_table_path = f"{NAMESPACE}:impl/items/guide"
     ctx.data.loot_tables[loot_table_path] = LootTable(loot_table)
+
+    cache = ctx.cache[f"{NAMESPACE}_guide"]
+    with open(cache.get_path(loot_table_path), "w") as f:
+        json.dump(loot_table, f, indent=4)
+    with open(cache.get_path(item_modifier_path), "w") as f:
+        json.dump(item_modifier, f, indent=4)
+
+    cache.json["loot_tables"] = []
+    cache.json["loot_tables"].append(loot_table_path)
+    cache.json["item_modifiers"] = []
+    cache.json["item_modifiers"].append(item_modifier_path)
     
