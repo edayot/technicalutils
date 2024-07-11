@@ -18,7 +18,7 @@ execute
 
 execute 
     as @e[type=item_frame,tag=technicalutils.servo] 
-    unless data entity @s Item.count 
+    unless items entity @s contents *[minecraft:custom_data~{technicalutils:{servo:{placed:1}}}]
     run function technicalutils:impl/servo/destroy
 
 
