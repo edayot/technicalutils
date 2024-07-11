@@ -17,9 +17,6 @@ execute
 
 
 execute 
-    as @e[type=item_frame,tag=technicalutils.servo.summoned]
-    at @s run function technicalutils:impl/servo/place_entity
-execute 
     as @e[type=item_frame,tag=technicalutils.servo] 
     unless data entity @s Item.count 
     run function technicalutils:impl/servo/destroy

@@ -174,6 +174,7 @@ def beet_default(ctx: Context):
             "minecraft:entity_data": {
                 "id": "minecraft:item_frame",
                 "Tags": [f"{NAMESPACE}.servo.summoned", f"{NAMESPACE}.servo.extract"],
+                "Invisible": 1,
             }
         }
     )
@@ -190,6 +191,7 @@ def beet_default(ctx: Context):
             "minecraft:entity_data": {
                 "id": "minecraft:item_frame",
                 "Tags": [f"{NAMESPACE}.servo.summoned", f"{NAMESPACE}.servo.insert"],
+                "Invisible": 1,
             }
         }
     )
