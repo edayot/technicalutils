@@ -444,22 +444,47 @@ class Mineral:
             material_name=f'{json.dumps({"translate": self.name[0]})}',
         ).export(ctx)
 
-        SimpledrawerMaterial(
-            block=raw_ore_block,
-            ingot=raw_ore,
-            nugget=None,
-            material_id=f'{NAMESPACE}.{self.id}_raw',
-            material_name=f'{json.dumps({"translate": self.name[0]})}',
-        ).export(ctx)
+        if raw_ore_block and raw_ore and ore and deepslate_ore and dust:
+            SimpledrawerMaterial(
+                block=raw_ore_block,
+                ingot=raw_ore,
+                nugget=None,
+                material_id=f'{NAMESPACE}.{self.id}_raw',
+                material_name=f'{json.dumps({"translate": self.name[0]})}',
+            ).export(ctx)
 
-        ShapedRecipe(
-            items=[
-                [raw_ore, raw_ore, raw_ore],
-                [raw_ore, raw_ore, raw_ore],
-                [raw_ore, raw_ore, raw_ore],
-            ],
-            result=(raw_ore_block, 1),
-        ).export(ctx)
+            ShapedRecipe(
+                items=[
+                    [raw_ore, raw_ore, raw_ore],
+                    [raw_ore, raw_ore, raw_ore],
+                    [raw_ore, raw_ore, raw_ore],
+                ],
+                result=(raw_ore_block, 1),
+            ).export(ctx)
+
+            ShapelessRecipe(
+                items=[(raw_ore_block, 1)],
+                result=(raw_ore, 9),
+            ).export(ctx)
+
+            NBTSmelting(
+                item=raw_ore,
+                result=(ingot, 1),
+                types=["furnace", "blast_furnace"],
+            ).export(ctx)
+
+            NBTSmelting(
+            item=ore,
+                result=(ingot, 1),
+                types=["furnace", "blast_furnace"],
+            ).export(ctx)
+
+            NBTSmelting(
+                item=deepslate_ore,
+                result=(ingot, 1),
+                types=["furnace", "blast_furnace"],
+            ).export(ctx)
+
 
         ShapedRecipe(
             items=[
@@ -489,28 +514,6 @@ class Mineral:
             result=(ingot, 9),
         ).export(ctx)
 
-        ShapelessRecipe(
-            items=[(raw_ore_block, 1)],
-            result=(raw_ore, 9),
-        ).export(ctx)
-
-        NBTSmelting(
-            item=raw_ore,
-            result=(ingot, 1),
-            types=["furnace", "blast_furnace"],
-        ).export(ctx)
-
-        NBTSmelting(
-            item=ore,
-            result=(ingot, 1),
-            types=["furnace", "blast_furnace"],
-        ).export(ctx)
-
-        NBTSmelting(
-            item=deepslate_ore,
-            result=(ingot, 1),
-            types=["furnace", "blast_furnace"],
-        ).export(ctx)
 
         NBTSmelting(
             item=dust,
