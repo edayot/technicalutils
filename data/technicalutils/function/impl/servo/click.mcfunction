@@ -32,4 +32,3 @@ execute
 
 tag @s remove technicalutils.me
 
-playsound minecraft:block.stone.hit block @a

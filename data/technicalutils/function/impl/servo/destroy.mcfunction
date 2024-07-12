@@ -1,4 +1,4 @@
 kill @s
 function #itemio:calls/servos/destroy
 
-playsound minecraft:block.stone.break block @a
+execute at @s run playsound minecraft:block.stone.break block @a

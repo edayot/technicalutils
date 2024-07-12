@@ -36,3 +36,4 @@ execute
 
 data modify entity @s ItemRotation set value 0b
 
+playsound minecraft:block.stone.hit block @a

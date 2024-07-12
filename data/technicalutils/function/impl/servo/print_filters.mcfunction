@@ -11,3 +11,4 @@ tellraw @a[tag=technicalutils.me] {"text": "]","color": "white"}
 data modify entity @s ItemRotation set value 0b
 
 
+playsound minecraft:block.stone.hit block @a
