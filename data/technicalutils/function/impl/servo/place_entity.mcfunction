@@ -20,3 +20,7 @@ scoreboard players set @s itemio.servo.retry_limit 1
 
 
 function #itemio:calls/servos/init
+
+
+stopsound @a[distance=..5] * minecraft:entity.item_frame.place
+playsound minecraft:block.stone.place block @a

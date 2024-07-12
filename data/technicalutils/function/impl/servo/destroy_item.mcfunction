@@ -10,3 +10,5 @@ execute if items entity @s container.0 *[minecraft:custom_model_data=1432005] ru
 
 kill @s
 function #itemio:calls/servos/destroy
+
+playsound minecraft:block.stone.break block @a
