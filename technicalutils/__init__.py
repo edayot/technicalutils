@@ -1,1 +1,1 @@
-from ._main import beet_default
+from .plugin import beet_default
