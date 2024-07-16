@@ -1081,15 +1081,17 @@ name = "simple-item-plugin"
 version = "0.5.1"
 description = ""
 optional = false
-python-versions = "<4.0,>=3.10"
-files = [
-    {file = "simple_item_plugin-0.5.1-py3-none-any.whl", hash = "sha256:d0991a83651c5deb2b13f62de589ea5d48460447d57c390ec50ef22149931131"},
-    {file = "simple_item_plugin-0.5.1.tar.gz", hash = "sha256:f5086437e6d71d00ab626d1a86b2f8fbf4e487640a77962ace669c38d5253875"},
-]
+python-versions = "^3.10"
+files = []
+develop = true
 
 [package.dependencies]
-bolt = ">=0.48.0,<0.49.0"
-model-resolver = ">=0.9.0,<0.10.0"
+bolt = "^0.48.0"
+model-resolver = "^0.9.0"
+
+[package.source]
+type = "directory"
+url = "../simple_item_plugin"
 
 [[package]]
 name = "smithed"
@@ -1241,4 +1243,4 @@ smithed = ">=0.16.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "a212193d88e12708d9ba79b209c7c9510349f73c8d3bae1161f70036fe645004"
+content-hash = "8cb2cbf936db2ebad98550d41dfe361f15a5482781929f8609706a8408a5cdd4"

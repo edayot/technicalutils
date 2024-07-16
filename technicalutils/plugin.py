@@ -7,7 +7,6 @@ from simple_item_plugin.utils import export_translated_string
 import json
 
 def beet_default(ctx: Context):
-    NAMESPACE.set(ctx.project_id)
     Mineral(
         id="silver",
         name=(
