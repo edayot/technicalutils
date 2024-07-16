@@ -13,6 +13,7 @@ weld-deps = ">=0.7.0"
 frozendict = "^2.4.2"
 bolt = "^0.48.0"
 model-resolver = "^0.9.0"
+simple-item-plugin = ">=0.2.0"
 
 [tool.poetry.dev-dependencies]
 python-semantic-release = "^8.7.0"
@@ -52,9 +53,9 @@ output = "build"
 pipeline = [
     "beet.contrib.unknown_files",
     "technicalutils",
-    "technicalutils.export",
-    "technicalutils.guide",
-    "technicalutils.versioning",
+    "simple_item_plugin",
+    "simple_item_plugin.guide",
+    "simple_item_plugin.versioning",
     "mecha",
 ]
 require=[
@@ -95,55 +96,37 @@ save_namespace = "technicalutils"
 
 [[tool.beet.meta.weld_deps.deps]]
 id = "itemio"
-match = "1.1.0"
-source = "smithed"
-
+version = "1.2.4"
 [[tool.beet.meta.weld_deps.deps]]
 id = "smithed.crafter.dev"
-match = ">=0.4.1"
-source = "smithed"
-
+version = "0.4.1"
 [[tool.beet.meta.weld_deps.deps]]
 id = "energy"
-match = ">=1.7.0"
-source = "smithed"
-
+version = "v1.7.0"
 
 [[tool.beet.meta.weld_deps.deps]]
 id = "fluid_crafting"
-match = ">=1.5.0"
-source = "smithed"
-
+version = "v1.5.0"
 
 [[tool.beet.meta.weld_deps.deps]]
 id = "nbtsmelting"
-match = ">=1.8.0"
-source = "smithed"
-
+version = "v1.8.0"
 
 
 [[tool.beet.meta.weld_deps.deps]]
 id = "%20chunk_scan.ores"
-match = ">=1.3.1"
-source = "smithed"
-
+version = "v1.4.0"
 
 [[tool.beet.meta.weld_deps.deps]]
 id = "chunk_scan"
-match = ">=1.3.1"
-source = "smithed"
-
+version = "v2.6.0"
 
 [[tool.beet.meta.weld_deps.deps]]
 id = "common_signals"
-match = ">=0.0.3"
-source = "smithed"
-
+version = "0.0.3"
 [[tool.beet.meta.weld_deps.deps]]
 id = "custom_block_ext"
-match = ">=0.2.0"
-source = "smithed"
-
+version = "0.2.0"
 [tool.beet.meta.smithed.versioning]
 scheduled_paths="impl/tick"
 

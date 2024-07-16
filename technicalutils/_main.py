@@ -1,9 +1,9 @@
 from beet import Context
-from .types import NAMESPACE, Lang
-from .mineral import Mineral
-from .item import Item, Registry
-from .crafting import VanillaItem, ShapedRecipe, SimpledrawerMaterial, ShapelessRecipe
-from .utils import export_translated_string
+from simple_item_plugin.types import NAMESPACE, Lang
+from simple_item_plugin.mineral import Mineral
+from simple_item_plugin.item import Item, Registry
+from simple_item_plugin.crafting import VanillaItem, ShapedRecipe, SimpledrawerMaterial, ShapelessRecipe
+from simple_item_plugin.utils import export_translated_string
 import json
 
 def beet_default(ctx: Context):
