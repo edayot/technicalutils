@@ -13,7 +13,7 @@ weld-deps = ">=0.7.0"
 frozendict = "^2.4.2"
 bolt = "^0.48.0"
 model-resolver = "^0.9.0"
-simple-item-plugin = ">=0.2.0"
+simple-item-plugin = {path = "../simple_item_plugin", develop = true}
 
 [tool.poetry.dev-dependencies]
 python-semantic-release = "^8.7.0"
@@ -51,11 +51,8 @@ upload_to_vcs_release = true
 output = "build"
 
 pipeline = [
-    "beet.contrib.unknown_files",
-    "technicalutils",
     "simple_item_plugin",
-    "simple_item_plugin.guide",
-    "simple_item_plugin.versioning",
+    "technicalutils",
     "mecha",
 ]
 require=[
