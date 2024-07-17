@@ -145,7 +145,7 @@ def beet_default(ctx: Context):
             'custom_model_data_placed': 1430000,
         }
     ).export(ctx)
-    silver_ingot = ctx.meta.get("registry",{}).get("items",{}).get("silver_ingot")
+    silver_ingot = ctx.meta["registry"]["items"].get("silver_ingot")
     redstone = VanillaItem("minecraft:redstone")
     iron_ingot = VanillaItem("minecraft:iron_ingot")
     glass = VanillaItem("minecraft:glass")
