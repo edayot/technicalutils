@@ -1078,7 +1078,7 @@ files = [
 
 [[package]]
 name = "simple-item-plugin"
-version = "0.5.1"
+version = "0.6.0"
 description = ""
 optional = false
 python-versions = "^3.10"
