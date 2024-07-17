@@ -1,7 +1,7 @@
 from beet import Context
 from simple_item_plugin.types import NAMESPACE, Lang
 from simple_item_plugin.mineral import Mineral
-from simple_item_plugin.item import Item, Registry
+from simple_item_plugin.item import Item
 from simple_item_plugin.crafting import VanillaItem, ShapedRecipe, SimpledrawerMaterial, ShapelessRecipe
 from simple_item_plugin.utils import export_translated_string
 import json
@@ -145,7 +145,7 @@ def beet_default(ctx: Context):
             'custom_model_data_placed': 1430000,
         }
     ).export(ctx)
-    silver_ingot = Registry.get("silver_ingot")
+    silver_ingot = ctx.meta.get("registry",{}).get("items",{}).get("silver_ingot")
     redstone = VanillaItem("minecraft:redstone")
     iron_ingot = VanillaItem("minecraft:iron_ingot")
     glass = VanillaItem("minecraft:glass")
