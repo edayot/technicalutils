@@ -144,7 +144,7 @@ def beet_default(ctx: Context):
             'base_item_placed': 'minecraft:light_gray_stained_glass_pane',
             'custom_model_data_placed': 1430000,
         }
-    )
+    ).export(ctx)
     silver_ingot = Registry.get("silver_ingot")
     redstone = VanillaItem("minecraft:redstone")
     iron_ingot = VanillaItem("minecraft:iron_ingot")
@@ -177,7 +177,7 @@ def beet_default(ctx: Context):
                 "Invisible": 1,
             }
         }
-    )
+    ).export(ctx)
 
     servo_insert = Item(
         id="servo_insert",
@@ -194,7 +194,7 @@ def beet_default(ctx: Context):
                 "Invisible": 1,
             }
         }
-    )
+    ).export(ctx)
     ShapedRecipe(
         [
             [None, redstone_block, None],
@@ -233,7 +233,7 @@ def beet_default(ctx: Context):
             {Lang.en_us: "Wrench", Lang.fr_fr: "Clé à molette"},
         ),
         custom_model_data=1432006,
-    )
+    ).export(ctx)
 
     ShapedRecipe(
         [
@@ -251,7 +251,7 @@ def beet_default(ctx: Context):
             {Lang.en_us: "ID Filter", Lang.fr_fr: "Filtre d'ID"},
         ),
         custom_model_data=1432007,
-    )
+    ).export(ctx)
 
     ShapelessRecipe(
         [(id_filter, 1)],
