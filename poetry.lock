@@ -27,26 +27,28 @@ name = "beet"
 version = "0.108.3"
 description = "The Minecraft pack development kit"
 optional = false
-python-versions = "<4.0,>=3.10"
-files = [
-    {file = "beet-0.108.3-py3-none-any.whl", hash = "sha256:803685194fef4f8360c989c49fee53a43e4723cf8d4be570df1c985358d090d9"},
-    {file = "beet-0.108.3.tar.gz", hash = "sha256:115bf3d0c6297d33f61d3e3d4e87981f922ed653efd97312af10069ff54476a2"},
-]
+python-versions = "^3.10"
+files = []
+develop = true
 
 [package.dependencies]
-click = ">=8.1.7,<9.0.0"
-click-help-colors = ">=0.9.2,<0.10.0"
+click = "^8.1.7"
+click-help-colors = "^0.9.2"
 colorama = {version = "*", markers = "sys_platform == \"win32\""}
-Jinja2 = ">=3.1.2,<4.0.0"
-nbtlib = ">=1.12.1,<2.0.0"
-pathspec = ">=0.11.2,<0.12.0"
-pydantic = ">=2.5.2,<3.0.0"
-PyYAML = ">=6.0.1,<7.0.0"
-toml = ">=0.10.2,<0.11.0"
-typing-extensions = ">=4.8.0,<5.0.0"
+Jinja2 = "^3.1.2"
+nbtlib = "^1.12.1"
+pathspec = "^0.11.2"
+pydantic = "^2.5.2"
+PyYAML = "^6.0.1"
+toml = "^0.10.2"
+typing-extensions = "^4.8.0"
 
 [package.extras]
 image = ["Pillow"]
+
+[package.source]
+type = "directory"
+url = "../beet"
 
 [[package]]
 name = "black"
@@ -493,13 +495,13 @@ files = [
 
 [[package]]
 name = "mecha"
-version = "0.95.0"
+version = "0.95.2"
 description = "A powerful Minecraft command library"
 optional = false
 python-versions = "<4.0,>=3.10"
 files = [
-    {file = "mecha-0.95.0-py3-none-any.whl", hash = "sha256:15e88c7c0bc534526d9576c8d36cc7e463a20b54bbc8768cf77a21cd5435099e"},
-    {file = "mecha-0.95.0.tar.gz", hash = "sha256:097f501c44743bb17651ceb9c85d57734c3717bca49ea792905a80d66f13a117"},
+    {file = "mecha-0.95.2-py3-none-any.whl", hash = "sha256:8abbbc6eee9871d622bf9c90cd6c3217b8325966d546bb0ca229d1eb7b963eff"},
+    {file = "mecha-0.95.2.tar.gz", hash = "sha256:06ee6f80f9dc091617fdeef7c03ffbbf482d5ec07cceab6e9f31a72a4e8a1ed8"},
 ]
 
 [package.dependencies]
@@ -1095,10 +1097,8 @@ version = "0.19.0"
 description = "Smithed's Python client with CLI, weld and more"
 optional = false
 python-versions = ">=3.10"
-files = [
-    {file = "smithed-0.19.0-py3-none-any.whl", hash = "sha256:a0858e0a04ffa50c801e8afb8f33e44669f2f47b142fbd4d6b3602f378b9677f"},
-    {file = "smithed-0.19.0.tar.gz", hash = "sha256:8fcce1ae649c23505c74d16022a84c4f8eec3a083dbbd084b9c364b9fdc00251"},
-]
+files = []
+develop = false
 
 [package.dependencies]
 backports-strenum = ">=1.2.8"
@@ -1108,6 +1108,12 @@ pydantic = ">=2.5.2"
 rich = ">=13.6.0"
 tokenstream = ">=1.7.0"
 typer = ">=0.9.0"
+
+[package.source]
+type = "git"
+url = "https://github.com/edayot/smithed-python.git"
+reference = "main"
+resolved_reference = "73ae6908a316105b090691fc481e2f9841f221bc"
 
 [[package]]
 name = "smmap"
@@ -1220,13 +1226,13 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "weld-deps"
-version = "0.8.1"
+version = "0.9.1"
 description = ""
 optional = false
 python-versions = "<4.0,>=3.11"
 files = [
-    {file = "weld_deps-0.8.1-py3-none-any.whl", hash = "sha256:d201491cf2fd00485d9935b029faf4fd8067b2c4c726e63304d458d2d854b6cb"},
-    {file = "weld_deps-0.8.1.tar.gz", hash = "sha256:75a546d9fff5e429188e5b4be979cdf99c30cf63b64afdc0ca59095a64c8d8ec"},
+    {file = "weld_deps-0.9.1-py3-none-any.whl", hash = "sha256:e3ace2fae15ddc2691986defdfd9f951f26ac1e97ebc49293fffec6bfea8f2d2"},
+    {file = "weld_deps-0.9.1.tar.gz", hash = "sha256:9274dc3ea442123190428ec87cf71f4d5ac49a3517a53c9286c57c6923f06350"},
 ]
 
 [package.dependencies]
@@ -1239,4 +1245,4 @@ smithed = ">=0.16.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "b42953818e3f40cd6b0fd93731e85af6db559d4f987e5c89556a9d3a6ac292e4"
+content-hash = "a5a0241f983990326160e9c2c9896746a9dd64e2ba694c00967217a439ed66c2"
