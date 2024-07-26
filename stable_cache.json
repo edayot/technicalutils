@@ -1,24 +1,33 @@
 {
-    "silver_ore": 1430001,
-    "silver_deepslate_ore": 1430002,
-    "silver_block": 1430003,
-    "silver_raw_ore_block": 1430004,
-    "silver_ingot": 1430005,
-    "silver_nugget": 1430006,
-    "silver_raw_ore": 1430007,
-    "silver_dust": 1430008,
-    "silver_pickaxe": 1430009,
-    "silver_axe": 1430010,
-    "silver_shovel": 1430011,
-    "silver_hoe": 1430012,
-    "silver_sword": 1430013,
-    "silver_helmet": 1430014,
-    "silver_chestplate": 1430015,
-    "silver_leggings": 1430016,
-    "silver_boots": 1430017,
-    "item_cable": 1430018,
-    "servo_extract": 1430019,
-    "servo_insert": 1430020,
-    "wrench": 1430021,
-    "id_filter": 1430022
+    "cmd": {
+        "silver_ore": 1430001,
+        "silver_deepslate_ore": 1430002,
+        "silver_block": 1430003,
+        "silver_raw_ore_block": 1430004,
+        "silver_ingot": 1430005,
+        "silver_nugget": 1430006,
+        "silver_raw_ore": 1430007,
+        "silver_dust": 1430008,
+        "silver_pickaxe": 1430009,
+        "silver_axe": 1430010,
+        "silver_shovel": 1430011,
+        "silver_hoe": 1430012,
+        "silver_sword": 1430013,
+        "silver_helmet": 1430014,
+        "silver_chestplate": 1430015,
+        "silver_leggings": 1430016,
+        "silver_boots": 1430017,
+        "item_cable": 1430018,
+        "servo_extract": 1430019,
+        "servo_insert": 1430020,
+        "wrench": 1430021,
+        "id_filter": 1430022
+    },
+    "armor_color": {
+        "silver": [
+            169,
+            22,
+            225
+        ]
+    }
 }
