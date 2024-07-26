@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-beet = {git = "https://github.com/edayot/beet.git", branch = "1.21-fixes_from_TheNuclearNexus_branch"}
+beet = "0.108.3"
 mecha = ">=0.94.0"
 weld-deps = ">=0.7.0"
 frozendict = "^2.4.2"
@@ -18,6 +18,10 @@ simple-item-plugin = {path = "../simple_item_plugin", develop = true}
 [tool.poetry.dev-dependencies]
 python-semantic-release = "^8.7.0"
 
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
 
 
@@ -64,7 +68,6 @@ require=[
 [tool.beet.data_pack]
 name = "{{ project_id }}_{{ project_version }}_dp_bundled"
 load = "."
-pack_format = 48
 
 [tool.beet.resource_pack]
 name = "{{ project_id }}_{{ project_version }}_rp_bundled"
