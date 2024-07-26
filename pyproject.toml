@@ -145,3 +145,8 @@ match="{{ project_id }}:v{{ version }}"
 implementation_prefix="{{ project_id }}:v{{ version }}/"
 version_check_path="v{{ version }}/calls"
 tag_path="calls"
+
+
+
+[tool.pyright]
+typeCheckingMode = "basic"
