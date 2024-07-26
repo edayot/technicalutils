@@ -13,7 +13,6 @@ def beet_default(ctx: Context):
             f"{NAMESPACE}.mineral.silver",
             {Lang.en_us: "Silver", Lang.fr_fr: "Argent"},
         ),
-        custom_model_data=1431000,
         items={
             "ore": {
                 "block_properties": {
@@ -136,7 +135,6 @@ def beet_default(ctx: Context):
             f"{NAMESPACE}.item.item_cable",
             {Lang.en_us: "Item Cable", Lang.fr_fr: "Câble d'objet"},
         ),
-        custom_model_data=1432001,
         base_item="minecraft:conduit",
         block_properties={
             'base_block': 'minecraft:conduit',
@@ -168,7 +166,6 @@ def beet_default(ctx: Context):
             f"{NAMESPACE}.item.servo_extract",
             {Lang.en_us: "Servo Extract", Lang.fr_fr: "Servo Extracteur"},
         ),
-        custom_model_data=1432002,
         base_item="minecraft:item_frame",
         components_extra={
             "minecraft:entity_data": {
@@ -185,7 +182,6 @@ def beet_default(ctx: Context):
             f"{NAMESPACE}.item.servo_insert",
             {Lang.en_us: "Servo Insert", Lang.fr_fr: "Servo Inserteur"},
         ),
-        custom_model_data=1432004,
         base_item="minecraft:item_frame",
         components_extra={
             "minecraft:entity_data": {
@@ -232,7 +228,6 @@ def beet_default(ctx: Context):
             f"{NAMESPACE}.item.wrench",
             {Lang.en_us: "Wrench", Lang.fr_fr: "Clé à molette"},
         ),
-        custom_model_data=1432006,
     ).export(ctx)
 
     ShapedRecipe(
@@ -250,7 +245,6 @@ def beet_default(ctx: Context):
             f"{NAMESPACE}.item.id_filter",
             {Lang.en_us: "ID Filter", Lang.fr_fr: "Filtre d'ID"},
         ),
-        custom_model_data=1432007,
     ).export(ctx)
 
     ShapelessRecipe(
