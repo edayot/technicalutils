@@ -21,7 +21,8 @@
         "servo_extract": 1430019,
         "servo_insert": 1430020,
         "wrench": 1430021,
-        "id_filter": 1430022
+        "id_filter": 1430022,
+        "guide": 1430023
     },
     "armor_color": {
         "silver": [
