@@ -12,7 +12,7 @@ mecha = ">=0.94.0"
 weld-deps = ">=0.7.0"
 frozendict = "^2.4.2"
 bolt = "^0.48.0"
-model-resolver = "^0.9.0"
+model-resolver = ">=0.10.0"
 simple-item-plugin = {path = "../simple_item_plugin", develop = true}
 smithed = {git = "https://github.com/edayot/smithed-python.git", branch = "main" }
 

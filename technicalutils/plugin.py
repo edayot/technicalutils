@@ -88,12 +88,12 @@ def beet_default(ctx: Context):
                 "attack_speed": 1.6,
             },
             "helmet": {
-                "armor": 6,
+                "armor": 3,
                 "armor_toughness": 2,
                 "max_damage": 200,
             },
             "chestplate": {
-                "armor": 3,
+                "armor": 6,
                 "armor_toughness": 1,
                 "max_damage": 300,
             },
