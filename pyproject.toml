@@ -66,6 +66,10 @@ require=[
     "mecha.contrib.nested_location",
 ]
 
+ignore = [
+    "stable_cache.json"
+]
+
 [tool.beet.data_pack]
 name = "{{ project_id }}_{{ project_version }}_dp_bundled"
 load = "."
