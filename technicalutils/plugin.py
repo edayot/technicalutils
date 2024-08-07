@@ -244,3 +244,20 @@ def beet_default(ctx: Context):
         (id_filter, 1),
     ).export(ctx)
 
+    guide = Item(
+        id="guide",
+        base_item="minecraft:written_book",
+        item_name=(
+            f"{NAMESPACE}.item.guide",
+            {Lang.en_us: "Guide", Lang.fr_fr: "Guide"},
+        ),
+        components_extra={
+            "minecraft:enchantment_glint_override": False,
+            "special:item_modifier": f"{NAMESPACE}:impl/guide",
+        },
+        guide_description=(f"{NAMESPACE}.guide.description", {
+            Lang.en_us: "The guide you are currently holding.",
+            Lang.fr_fr: "Le guide que vous tenez actuellement."
+        })
+    ).export(ctx)
+

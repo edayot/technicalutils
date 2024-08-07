@@ -135,11 +135,6 @@ version = "0.0.3"
 id = "custom_block_ext"
 version = "0.2.0"
 
-[[tool.beet.meta.weld_deps.deps]]
-id = "fancyPants"
-version = "3.0.0"
-source = "download"
-download_rp = "file:///home/erwan/T%C3%A9l%C3%A9chargements/fancyPantsv3_0_0.zip"
 
 [tool.beet.meta.smithed.versioning]
 scheduled_paths="impl/tick"
