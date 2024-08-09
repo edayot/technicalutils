@@ -1,12 +1,30 @@
 from beet import Context
 from simple_item_plugin.types import NAMESPACE, Lang
 from simple_item_plugin.mineral import Mineral
-from simple_item_plugin.item import Item, BlockProperties, WorldGenerationParams
+from simple_item_plugin.item import Item, BlockProperties, WorldGenerationParams, ItemGroup
 from simple_item_plugin.crafting import VanillaItem, ShapedRecipe, SimpledrawerMaterial, ShapelessRecipe
 from simple_item_plugin.utils import export_translated_string
 import json
 
 def beet_default(ctx: Context):
+    # Registering Items
+    guide = Item(
+        id="guide",
+        base_item="minecraft:written_book",
+        item_name=(
+            f"{NAMESPACE}.item.guide",
+            {Lang.en_us: "Guide", Lang.fr_fr: "Guide"},
+        ),
+        components_extra={
+            "minecraft:enchantment_glint_override": False,
+            "special:item_modifier": f"{NAMESPACE}:impl/guide",
+        },
+        guide_description=(f"{NAMESPACE}.guide.description", {
+            Lang.en_us: "The guide you are currently holding.",
+            Lang.fr_fr: "Le guide que vous tenez actuellement."
+        })
+    ).export(ctx)
+
     Mineral(
         id="silver",
         name=(
@@ -129,22 +147,6 @@ def beet_default(ctx: Context):
             custom_model_data_placed=1430000,
         )
     ).export(ctx)
-    silver_ingot = Item.get_from_id(ctx, "silver_ingot")
-    redstone = VanillaItem("minecraft:redstone")
-    iron_ingot = VanillaItem("minecraft:iron_ingot")
-    glass = VanillaItem("minecraft:glass")
-    redstone_block = VanillaItem("minecraft:redstone_block")
-    comparator = VanillaItem("minecraft:comparator")
-    hopper = VanillaItem("minecraft:hopper")
-
-    ShapedRecipe(
-        (
-            (iron_ingot, glass, iron_ingot),
-            (silver_ingot, redstone, silver_ingot),
-            (iron_ingot, glass, iron_ingot),
-        ),
-        (item_cable, 16)
-    ).export(ctx)
 
     servo_extract = Item(
         id="servo_extract",
@@ -177,21 +179,59 @@ def beet_default(ctx: Context):
             }
         }
     ).export(ctx)
+    id_filter = Item(
+        id="id_filter",
+        item_name=(
+            f"{NAMESPACE}.item.id_filter",
+            {Lang.en_us: "ID Filter", Lang.fr_fr: "Filtre d'ID"},
+        ),
+    ).export(ctx)
+    
+    ItemGroup(
+        id="networking",
+        name=(
+            f"{NAMESPACE}.item_group.networking",
+            {Lang.en_us: "Networking", Lang.fr_fr: "Réseau"},
+        ),
+        item_icon=item_cable,
+        items_list=[item_cable, servo_extract, servo_insert, id_filter],
+    )
+
+    # Crafting Part
+
+    silver_ingot = Item.get(ctx, "silver_ingot")
+    assert silver_ingot is not None
+    redstone = VanillaItem("minecraft:redstone")
+    iron_ingot = VanillaItem("minecraft:iron_ingot")
+    glass = VanillaItem("minecraft:glass")
+    redstone_block = VanillaItem("minecraft:redstone_block")
+    comparator = VanillaItem("minecraft:comparator")
+    hopper = VanillaItem("minecraft:hopper")
+
     ShapedRecipe(
-        (
+        items=(
+            (iron_ingot, glass, iron_ingot),
+            (silver_ingot, redstone, silver_ingot),
+            (iron_ingot, glass, iron_ingot),
+        ),
+        result=(item_cable, 16)
+    ).export(ctx)
+
+    ShapedRecipe(
+        items=(
             (None, redstone_block, None),
             (silver_ingot, comparator, silver_ingot),
             (None, None, None),
         ),
-        (servo_extract, 1)
+        result=(servo_extract, 1)
     ).export(ctx)
     ShapedRecipe(
-        (
+        items=(
             (silver_ingot, comparator, silver_ingot),
             (None, redstone_block, None),
             (None, None, None),
         ),
-        (servo_insert, 1)
+        result=(servo_insert, 1)
     ).export(ctx)
 
     servo = (
@@ -219,21 +259,14 @@ def beet_default(ctx: Context):
     ).export(ctx)
 
     ShapedRecipe(
-        (
+        items=(
             (None, iron_ingot, None),
             (None, silver_ingot, iron_ingot),
             (iron_ingot, None, None),
         ),
-        (wrench, 1)
+        result=(wrench, 1)
     ).export(ctx)
 
-    id_filter = Item(
-        id="id_filter",
-        item_name=(
-            f"{NAMESPACE}.item.id_filter",
-            {Lang.en_us: "ID Filter", Lang.fr_fr: "Filtre d'ID"},
-        ),
-    ).export(ctx)
 
     ShapelessRecipe(
         [(id_filter, 1)],
@@ -243,21 +276,3 @@ def beet_default(ctx: Context):
         [(hopper, 1), (silver_ingot, 1)],
         (id_filter, 1),
     ).export(ctx)
-
-    guide = Item(
-        id="guide",
-        base_item="minecraft:written_book",
-        item_name=(
-            f"{NAMESPACE}.item.guide",
-            {Lang.en_us: "Guide", Lang.fr_fr: "Guide"},
-        ),
-        components_extra={
-            "minecraft:enchantment_glint_override": False,
-            "special:item_modifier": f"{NAMESPACE}:impl/guide",
-        },
-        guide_description=(f"{NAMESPACE}.guide.description", {
-            Lang.en_us: "The guide you are currently holding.",
-            Lang.fr_fr: "Le guide que vous tenez actuellement."
-        })
-    ).export(ctx)
-
