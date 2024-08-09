@@ -11,5 +11,6 @@ _build/
 !releases/included/none/pack.mcmeta
 .env
 .mypy_cache/
+!src/integrated/*.zip
 
 build
