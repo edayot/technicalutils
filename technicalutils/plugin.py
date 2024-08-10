@@ -195,18 +195,18 @@ def beet_default(ctx: Context):
         ),
         item_icon=item_cable,
         items_list=[item_cable, servo_extract, servo_insert, id_filter],
-    )
+    ).export(ctx)
 
     # Crafting Part
 
     silver_ingot = Item.get(ctx, "silver_ingot")
     assert silver_ingot is not None
-    redstone = VanillaItem("minecraft:redstone")
-    iron_ingot = VanillaItem("minecraft:iron_ingot")
-    glass = VanillaItem("minecraft:glass")
-    redstone_block = VanillaItem("minecraft:redstone_block")
-    comparator = VanillaItem("minecraft:comparator")
-    hopper = VanillaItem("minecraft:hopper")
+    redstone = VanillaItem(id="minecraft:redstone").export(ctx)
+    iron_ingot = VanillaItem(id="minecraft:iron_ingot").export(ctx)
+    glass = VanillaItem(id="minecraft:glass").export(ctx)
+    redstone_block = VanillaItem(id="minecraft:redstone_block").export(ctx)
+    comparator = VanillaItem(id="minecraft:comparator").export(ctx)
+    hopper = VanillaItem(id="minecraft:hopper").export(ctx)
 
     ShapedRecipe(
         items=(
