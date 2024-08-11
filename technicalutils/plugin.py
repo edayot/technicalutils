@@ -186,6 +186,13 @@ def beet_default(ctx: Context):
             {Lang.en_us: "ID Filter", Lang.fr_fr: "Filtre d'ID"},
         ),
     ).export(ctx)
+    wrench = Item(
+        id="wrench",
+        item_name=(
+            f"{NAMESPACE}.item.wrench",
+            {Lang.en_us: "Wrench", Lang.fr_fr: "Clé à molette"},
+        ),
+    ).export(ctx)
     
     ItemGroup(
         id="networking",
@@ -194,7 +201,7 @@ def beet_default(ctx: Context):
             {Lang.en_us: "Networking", Lang.fr_fr: "Réseau"},
         ),
         item_icon=item_cable,
-        items_list=[item_cable, servo_extract, servo_insert, id_filter],
+        items_list=[item_cable, servo_extract, servo_insert, id_filter, wrench],
     ).export(ctx)
 
     # Crafting Part
@@ -249,14 +256,6 @@ def beet_default(ctx: Context):
         nugget_in_ingot=1,
     ).export(ctx)
 
-
-    wrench = Item(
-        id="wrench",
-        item_name=(
-            f"{NAMESPACE}.item.wrench",
-            {Lang.en_us: "Wrench", Lang.fr_fr: "Clé à molette"},
-        ),
-    ).export(ctx)
 
     ShapedRecipe(
         items=(
