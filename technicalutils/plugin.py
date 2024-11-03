@@ -127,7 +127,7 @@ def beet_default(ctx: Context):
             },
         },
         armor_additional_attributes={
-            "minecraft:generic.movement_speed": {
+            "minecraft:movement_speed": {
                 "amount": -0.0015,
                 "slot": "armor",
             }
