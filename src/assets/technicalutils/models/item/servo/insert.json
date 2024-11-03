@@ -1,7 +1,7 @@
 {
-	"parent": "technicalutils:servo/base",
+	"parent": "technicalutils:item/servo/base",
 	"textures": {
-		"0": "technicalutils:block/servo/extract_connected"
+		"0": "technicalutils:block/servo/insert"
 	},
 	"display": {
 		"fixed": {

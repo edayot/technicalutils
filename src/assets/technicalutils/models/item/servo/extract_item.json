@@ -1,5 +1,5 @@
 {
-	"parent": "technicalutils:servo/base_item",
+	"parent": "technicalutils:item/servo/base_item",
 	"textures": {
 		"0": "technicalutils:block/servo/extract"
 	}

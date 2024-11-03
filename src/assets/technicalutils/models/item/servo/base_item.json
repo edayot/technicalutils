@@ -1,5 +1,5 @@
 {
-	"parent": "technicalutils:servo/base",
+	"parent": "technicalutils:item/servo/base",
 	"display": {
 		"thirdperson_righthand": {
 			"translation": [0, 4, 0],

@@ -1,4 +1,4 @@
 {
-    "parent": "technicalutils:servo/extract_item"
+    "parent": "technicalutils:item/servo/extract_item"
 }
   

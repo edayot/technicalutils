@@ -82,9 +82,6 @@ load = "src"
 mc_supports = ["1.21"]
 minecraft_version = "1.21"
 
-[tool.beet.meta.simple_item_plugin]
-custom_model_data = 1430000
-
 [tool.beet.meta.mecha]
 multiline = true
 match = ["technicalutils:**"]

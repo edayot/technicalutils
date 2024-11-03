@@ -144,7 +144,7 @@ def beet_default(ctx: Context):
             base_block="minecraft:conduit",
             smart_waterlog=True,
             base_item_placed="minecraft:light_gray_stained_glass_pane",
-            custom_model_data_placed=1430000,
+            item_model_placed="technicalutils:item_cable_placed",
         )
     ).export(ctx)
 
