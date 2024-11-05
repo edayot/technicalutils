@@ -2,7 +2,7 @@ from beet import Context
 from simple_item_plugin.types import NAMESPACE, Lang
 from simple_item_plugin.mineral import Mineral
 from simple_item_plugin.item import Item, BlockProperties, WorldGenerationParams, ItemGroup
-from simple_item_plugin.crafting import VanillaItem, ShapedRecipe, SimpledrawerMaterial, ShapelessRecipe
+from simple_item_plugin.crafting import VanillaItem, ShapedRecipe, SimpledrawerMaterial, ShapelessRecipe, ExternalItem
 from simple_item_plugin.utils import export_translated_string
 import json
 
@@ -23,6 +23,44 @@ def beet_default(ctx: Context):
             Lang.en_us: "The guide you are currently holding.",
             Lang.fr_fr: "Le guide que vous tenez actuellement."
         })
+    ).export(ctx)
+
+    smooth_stone = VanillaItem(id="minecraft:smooth_stone").export(ctx)
+    oak_log = VanillaItem(id="minecraft:oak_log").export(ctx)
+    crafting_table = VanillaItem(id="minecraft:crafting_table").export(ctx)
+
+    heavy_workbench = ExternalItem(
+        id="smithed:crafter",
+        loot_table_path="smithed.crafter:blocks/table",
+        model_path="smithed.crafter:item/table",
+        minimal_representation={
+            "id":"minecraft:furnace",
+            "components": {
+                "minecraft:item_name": json.dumps({"translate":"block.smithed.crafter"})
+            }
+        }, 
+        guide_description=(f"{NAMESPACE}.guide.heavy_workbench", {
+            Lang.fr_fr: "C'est une table de craft qui permet de crafter les items de Grappling Hook.",
+            Lang.en_us: "It's a crafting table that allows you to craft Grappling Hook items."
+        })
+    ).export(ctx)
+    ShapedRecipe(
+        items=(
+            (oak_log, oak_log, oak_log),
+            (oak_log, crafting_table, oak_log),
+            (smooth_stone, smooth_stone, smooth_stone),
+        ),
+        result=(heavy_workbench, 1),
+    ).export(ctx, True)
+
+    ItemGroup(
+        id="tutorial",
+        name=(
+            f"{NAMESPACE}.item_group.tutorial",
+            {Lang.en_us: "Tutorial", Lang.fr_fr: "Tutoriel"},
+        ),
+        item_icon=guide,
+        items_list=[heavy_workbench, guide],
     ).export(ctx)
 
     Mineral(
@@ -193,7 +231,7 @@ def beet_default(ctx: Context):
             {Lang.en_us: "Wrench", Lang.fr_fr: "Clé à molette"},
         ),
     ).export(ctx)
-    
+
     ItemGroup(
         id="networking",
         name=(
