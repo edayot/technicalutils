@@ -32,7 +32,7 @@ def beet_default(ctx: Context):
     heavy_workbench = ExternalItem(
         id="smithed:crafter",
         loot_table_path="smithed.crafter:blocks/table",
-        model_path="smithed.crafter:item/table",
+        item_model="smithed.crafter:table",
         minimal_representation={
             "id":"minecraft:furnace",
             "components": {
